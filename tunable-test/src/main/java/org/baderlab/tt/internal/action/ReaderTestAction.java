@@ -37,6 +37,7 @@ public class ReaderTestAction extends AbstractCyAction {
         props.setProperty("what", "false");
         props.setProperty("str", "This is now a string that has a different value");
         props.setProperty("yesNoMaybe", "MAYBE");
+        props.setProperty("numbers", "3");
         
         
         tunablePropertySerailzer.setTunables(tunables, props);
