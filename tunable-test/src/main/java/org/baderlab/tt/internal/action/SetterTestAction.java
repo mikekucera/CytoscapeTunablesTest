@@ -22,7 +22,7 @@ public class SetterTestAction extends AbstractCyAction {
 
     @Inject
     public SetterTestAction(CyApplicationManager applicationManager) {
-        super("Setter Test", applicationManager, null, null);
+        super("TunableSetter Test", applicationManager, null, null);
     }
 
     public void actionPerformed(ActionEvent e) {

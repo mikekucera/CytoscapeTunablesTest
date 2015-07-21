@@ -1,13 +1,16 @@
 package org.baderlab.tt.internal;
 
+import static org.cytoscape.work.ServiceProperties.*;
 import static org.ops4j.peaberry.Peaberry.*;
 
 import java.util.Properties;
 
-import org.baderlab.tt.internal.action.DialogTestAction;
 import org.baderlab.tt.internal.action.DialogTestActionFactory;
+import org.baderlab.tt.internal.action.ReaderTestAction;
 import org.baderlab.tt.internal.action.SetterTestAction;
+import org.baderlab.tt.internal.action.WriterTestAction;
 import org.baderlab.tt.internal.action.YesNoMaybeHandler;
+import org.baderlab.tt.internal.layout.NothingLayoutAlgorithm;
 import org.baderlab.tt.internal.tunables.Line;
 import org.baderlab.tt.internal.tunables.Vote;
 import org.baderlab.tt.internal.tunables.YesNoMaybe;
@@ -15,11 +18,14 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.work.TunableSetter;
+import org.cytoscape.work.properties.TunablePropertySerializerFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.GUITunableHandlerFactory;
 import org.cytoscape.work.swing.PanelTaskManager;
 import org.cytoscape.work.swing.SimpleGUITunableHandlerFactory;
+import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.AbstractModule;
@@ -35,21 +41,21 @@ public class CyActivator extends AbstractCyActivator {
 
         DialogTestActionFactory dialogTestActionFactory = injector.getInstance(DialogTestActionFactory.class);
         
-        DialogTestAction lineAction = dialogTestActionFactory.create("Line Dialog Test", new Line());
-        registerMenuAction(bc, lineAction);
-        
-        DialogTestAction voteAction = dialogTestActionFactory.create("Vote Dialog Test", new Vote());
-        registerMenuAction(bc, voteAction);
-        
-        SetterTestAction setterTestAction = injector.getInstance(SetterTestAction.class);
-        registerMenuAction(bc, setterTestAction);
-        
+        registerMenuAction(bc, dialogTestActionFactory.create("Line Dialog Test", new Line()));
+        registerMenuAction(bc, dialogTestActionFactory.create("Vote Dialog Test", new Vote()));
+        registerMenuAction(bc, injector.getInstance(SetterTestAction.class));
+        registerMenuAction(bc, injector.getInstance(WriterTestAction.class));
+        registerMenuAction(bc, injector.getInstance(ReaderTestAction.class));
         
         SimpleGUITunableHandlerFactory<YesNoMaybeHandler> yesNoMaybeHandlerFactory = 
                 new SimpleGUITunableHandlerFactory<YesNoMaybeHandler>(YesNoMaybeHandler.class, YesNoMaybe.class);
         registerService(bc, yesNoMaybeHandlerFactory, GUITunableHandlerFactory.class, new Properties());
+        
+        NothingLayoutAlgorithm nothingLayout = injector.getInstance(NothingLayoutAlgorithm.class);
+        registerLayoutAlgorithm(bc, nothingLayout);
     }
 
+    
     
     private void registerMenuAction(BundleContext bc, AbstractCyAction action) {
         action.setPreferredMenu("Apps.Tunable Test");
@@ -57,16 +63,29 @@ public class CyActivator extends AbstractCyActivator {
     }
     
     
+    private void registerLayoutAlgorithm(BundleContext bc, CyLayoutAlgorithm algorithm) {
+        Properties props = new Properties();
+        props.setProperty("preferredTaskManager", "menu");
+        props.setProperty(TITLE, algorithm.toString());
+        props.setProperty(MENU_GRAVITY, "40.1");
+        registerService(bc, algorithm, CyLayoutAlgorithm.class, props);
+    }
+    
+    
+    
     private class MainModule extends AbstractModule {
-
-        // Bind Cytoscape services for injection
         @Override
         protected void configure() {
+            // Bind Cytoscape services for injection
             bind(CyApplicationManager.class).toProvider(service(CyApplicationManager.class).single());
             bind(CySwingApplication.class).toProvider(service(CySwingApplication.class).single());
+            bind(UndoSupport.class).toProvider(service(UndoSupport.class).single());
+            
             bind(DialogTaskManager.class).toProvider(service(DialogTaskManager.class).single());
             bind(PanelTaskManager.class).toProvider(service(PanelTaskManager.class).single());
+            
             bind(TunableSetter.class).toProvider(service(TunableSetter.class).single());
+            bind(TunablePropertySerializerFactory.class).toProvider(service(TunablePropertySerializerFactory.class).single());
             
             install(new FactoryModuleBuilder().build(DialogTestActionFactory.class));
         }
