@@ -22,6 +22,9 @@ public class DialogTestAction extends AbstractCyAction {
 
     @Inject private PanelTaskManager panelTaskManager;
     @Inject private CySwingApplication swingApplication;
+    
+    private boolean showResultPopup = true;
+    
 
     private final Object objectWithTunables;
     
@@ -31,8 +34,16 @@ public class DialogTestAction extends AbstractCyAction {
         this.objectWithTunables = objectWithTunables;
     }
 
+    public DialogTestAction setShowResultPopup(boolean show) {
+        this.showResultPopup = show;
+        return this;
+    }
     
     public void actionPerformed(ActionEvent e) {
+        showDialog();
+    }
+    
+    public void showDialog() {
         JPanel panel = panelTaskManager.getConfiguration(null, objectWithTunables);
 
         int result = JOptionPane.showConfirmDialog(swingApplication.getJFrame(), 
@@ -42,7 +53,10 @@ public class DialogTestAction extends AbstractCyAction {
         
         if(result == JOptionPane.OK_OPTION) {
             panelTaskManager.validateAndApplyTunables(objectWithTunables);
-            JOptionPane.showMessageDialog(swingApplication.getJFrame(), objectWithTunables.toString());
+            
+            if(showResultPopup) {
+                JOptionPane.showMessageDialog(swingApplication.getJFrame(), objectWithTunables.toString());
+            }
         }
     }
 }
