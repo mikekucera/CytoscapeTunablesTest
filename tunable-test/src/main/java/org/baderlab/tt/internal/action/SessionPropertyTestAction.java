@@ -21,27 +21,42 @@ import com.google.inject.Inject;
 @SuppressWarnings("serial")
 public class SessionPropertyTestAction extends AbstractCyAction {
 
+    public static final String CY_PROPERTY_NAME = "test-line";
+    
     @Inject private TunablePropertySerializerFactory serializerFactory;
     @Inject private CySessionManager sessionManager;
     @Inject private DialogTestActionFactory dialogFactory;
 
     @Inject
     public SessionPropertyTestAction(CyApplicationManager applicationManager) {
-        super("Session Property Test", applicationManager, null, null);
+        this("Session Property Test", applicationManager);
+    }
+    
+    public SessionPropertyTestAction(String title, CyApplicationManager applicationManager) {
+        super(title, applicationManager, null, null);
     }
 
     public void actionPerformed(ActionEvent e) {
+        CyProperty<Properties> lineProperties = null;
+        
         Set<CyProperty<?>> propertySet = sessionManager.getCurrentSession().getProperties();
         for(CyProperty<?> cyProperty : propertySet) {
-            if("test-line".equals(cyProperty.getName())) {
-                processLineTunable((CyProperty<Properties>)cyProperty);
-                break;
+            System.out.println(cyProperty.getName());
+            if(getCyPropertyName().equals(cyProperty.getName())) {
+                lineProperties = (CyProperty<Properties>) cyProperty;
             }
+        }
+        
+        if(lineProperties != null) {
+            processLineTunable(lineProperties);
         }
     }
     
+    protected String getCyPropertyName() {
+        return CY_PROPERTY_NAME;
+    }
     
-    private void processLineTunable(CyProperty<Properties> cyProperty) {
+    protected void processLineTunable(CyProperty<Properties> cyProperty) {
         TunablePropertySerializer tunablePropertySerailzer = serializerFactory.createSerializer();
         
         Line line = new Line();
@@ -66,7 +81,7 @@ public class SessionPropertyTestAction extends AbstractCyAction {
     }
     
     
-    private static void print(String message, Object object) {
+    protected static void print(String message, Object object) {
         System.out.println(message);
         System.out.println(object);
         System.out.println();

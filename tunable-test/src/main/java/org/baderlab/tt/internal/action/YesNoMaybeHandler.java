@@ -60,7 +60,7 @@ public class YesNoMaybeHandler extends AbstractGUITunableHandler {
         
         yesButton.setSelected(true);
         
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         buttonPanel.add(yesButton);
         buttonPanel.add(noButton);
         buttonPanel.add(maybeButton);
