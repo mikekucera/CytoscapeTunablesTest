@@ -13,6 +13,7 @@ import org.baderlab.tt.internal.action.SetterTestAction;
 import org.baderlab.tt.internal.action.WriterTestAction;
 import org.baderlab.tt.internal.action.YesNoMaybeHandler;
 import org.baderlab.tt.internal.layout.NothingLayoutAlgorithm;
+import org.baderlab.tt.internal.task.ShiftNodeViewTaskFactory;
 import org.baderlab.tt.internal.tunables.Line;
 import org.baderlab.tt.internal.tunables.Vote;
 import org.baderlab.tt.internal.tunables.YesNoMaybe;
@@ -24,6 +25,7 @@ import org.cytoscape.property.SimpleCyProperty;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.work.TunableSetter;
 import org.cytoscape.work.properties.TunablePropertySerializerFactory;
@@ -73,6 +75,12 @@ public class CyActivator extends AbstractCyActivator {
         Properties serviceProps = new Properties();
         serviceProps.setProperty("cyPropertyName", SessionPropertyTestAction.CY_PROPERTY_NAME + ".props");
         registerAllServices(bc, sessionProps, serviceProps);
+        
+        
+        ShiftNodeViewTaskFactory shiftNodeViewTaskFactory = new ShiftNodeViewTaskFactory();
+        Properties shiftProps = new Properties();
+        shiftProps.setProperty("title", "Shift Node");
+        registerService(bc, shiftNodeViewTaskFactory, NodeViewTaskFactory.class, shiftProps);
     }
 
     
