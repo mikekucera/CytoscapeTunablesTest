@@ -27,6 +27,7 @@ public class WriterTestAction extends AbstractCyAction {
 
     public void actionPerformed(ActionEvent e) {
         LotsOfTunables tunables = new LotsOfTunables();
+        System.out.println(tunables);
         TunablePropertySerializer tunablePropertySerailzer = serializerFactory.createSerializer();
         Properties props = tunablePropertySerailzer.toProperties(tunables);
         System.out.println("Properties:");
