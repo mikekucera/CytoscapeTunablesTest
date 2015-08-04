@@ -45,8 +45,8 @@ public class CyActivator extends AbstractCyActivator {
 
     @Override
     public void start(BundleContext bc) throws Exception {
+        // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
-
         DialogTestActionFactory dialogTestActionFactory = injector.getInstance(DialogTestActionFactory.class);
         
         registerMenuAction(bc, dialogTestActionFactory.create("Line Dialog Test", new Line()));
@@ -57,14 +57,18 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(SessionPropertyTestAction.class));
         registerMenuAction(bc, injector.getInstance(SessionPropertyRegistrarTestAction.class));
         
+        
+        // A custom GUI tunable handler that provides a set of radio buttons for the YesNoMaybe enum.
         SimpleGUITunableHandlerFactory<YesNoMaybeHandler> yesNoMaybeHandlerFactory = 
                 new SimpleGUITunableHandlerFactory<YesNoMaybeHandler>(YesNoMaybeHandler.class, YesNoMaybe.class);
         registerService(bc, yesNoMaybeHandlerFactory, GUITunableHandlerFactory.class, new Properties());
         
+        // A layout algorithm that doesn't do anything, just for testing that custom tunable handlers
+        // will work for Tunable fields in a layout context object.
         NothingLayoutAlgorithm nothingLayout = injector.getInstance(NothingLayoutAlgorithm.class);
         registerLayoutAlgorithm(bc, nothingLayout);
         
-        
+        // Here is the CyProperties used by the SessionPropertyTestAction
         Properties defaultProps = new Properties();
         defaultProps.put("startPoint.x", "9");
         defaultProps.put("startPoint.y", "10");
@@ -76,7 +80,9 @@ public class CyActivator extends AbstractCyActivator {
         serviceProps.setProperty("cyPropertyName", SessionPropertyTestAction.CY_PROPERTY_NAME + ".props");
         registerAllServices(bc, sessionProps, serviceProps);
         
-        
+        // This is an example of how Apps must currently use Tasks and TaskFactories to get
+        // context sensitive (ie right click) settings dialogs to work. 
+        // Hopefully a new Preferences API will make this easier.
         ShiftNodeViewTaskFactory shiftNodeViewTaskFactory = new ShiftNodeViewTaskFactory();
         Properties shiftProps = new Properties();
         shiftProps.setProperty("title", "Shift Node");
@@ -100,7 +106,9 @@ public class CyActivator extends AbstractCyActivator {
     }
     
     
-    
+    /**
+     * Guice module.
+     */
     private class MainModule extends AbstractModule {
         @Override
         protected void configure() {
