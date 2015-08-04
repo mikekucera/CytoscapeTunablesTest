@@ -5,10 +5,10 @@ import static org.ops4j.peaberry.Peaberry.*;
 
 import java.util.Properties;
 
-import org.baderlab.tt.internal.action.DialogTestActionFactory;
+import org.baderlab.tt.internal.action.ActionFactory;
+import org.baderlab.tt.internal.action.CreateLocalAttributeAction;
+import org.baderlab.tt.internal.action.PropertyGetterFactory;
 import org.baderlab.tt.internal.action.ReaderTestAction;
-import org.baderlab.tt.internal.action.SessionPropertyRegistrarTestAction;
-import org.baderlab.tt.internal.action.SessionPropertyTestAction;
 import org.baderlab.tt.internal.action.SetterTestAction;
 import org.baderlab.tt.internal.action.WriterTestAction;
 import org.baderlab.tt.internal.action.YesNoMaybeHandler;
@@ -47,15 +47,18 @@ public class CyActivator extends AbstractCyActivator {
     public void start(BundleContext bc) throws Exception {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
-        DialogTestActionFactory dialogTestActionFactory = injector.getInstance(DialogTestActionFactory.class);
+        ActionFactory actionFactory = injector.getInstance(ActionFactory.class);
+        PropertyGetterFactory propertyGetterFactory = injector.getInstance(PropertyGetterFactory.class);
         
-        registerMenuAction(bc, dialogTestActionFactory.create("Line Dialog Test", new Line()));
-        registerMenuAction(bc, dialogTestActionFactory.create("Vote Dialog Test", new Vote()));
+        registerMenuAction(bc, actionFactory.createDialogTestAction("Line Dialog Test", new Line()));
+        registerMenuAction(bc, actionFactory.createDialogTestAction("Vote Dialog Test", new Vote()));
         registerMenuAction(bc, injector.getInstance(SetterTestAction.class));
         registerMenuAction(bc, injector.getInstance(WriterTestAction.class));
         registerMenuAction(bc, injector.getInstance(ReaderTestAction.class));
-        registerMenuAction(bc, injector.getInstance(SessionPropertyTestAction.class));
-        registerMenuAction(bc, injector.getInstance(SessionPropertyRegistrarTestAction.class));
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Action", propertyGetterFactory.sessionGetter()));
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Registrar Action", propertyGetterFactory.registrarSessionGetter()));
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Config Dir Property Registrar Action", propertyGetterFactory.configDirRegistrarGetter()));
+        registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         
         
         // A custom GUI tunable handler that provides a set of radio buttons for the YesNoMaybe enum.
@@ -68,17 +71,19 @@ public class CyActivator extends AbstractCyActivator {
         NothingLayoutAlgorithm nothingLayout = injector.getInstance(NothingLayoutAlgorithm.class);
         registerLayoutAlgorithm(bc, nothingLayout);
         
-        // Here is the CyProperties used by the SessionPropertyTestAction
+        
+        // Here is the CyProperties used by the "Session Property Action"
         Properties defaultProps = new Properties();
         defaultProps.put("startPoint.x", "9");
         defaultProps.put("startPoint.y", "10");
         defaultProps.put("endPoint.x", "11");
         defaultProps.put("endPoint.y", "12");
-        CyProperty<Properties> sessionProps = new SimpleCyProperty<>(SessionPropertyTestAction.CY_PROPERTY_NAME, defaultProps, 
+        CyProperty<Properties> sessionProps = new SimpleCyProperty<>(PropertyGetterFactory.CY_PROPERTY_NAME_SESSION, defaultProps, 
                                                                      Properties.class, CyProperty.SavePolicy.SESSION_FILE_AND_CONFIG_DIR);
         Properties serviceProps = new Properties();
-        serviceProps.setProperty("cyPropertyName", SessionPropertyTestAction.CY_PROPERTY_NAME + ".props");
+        serviceProps.setProperty("cyPropertyName", PropertyGetterFactory.CY_PROPERTY_NAME_SESSION + ".props");
         registerAllServices(bc, sessionProps, serviceProps);
+        
         
         // This is an example of how Apps must currently use Tasks and TaskFactories to get
         // context sensitive (ie right click) settings dialogs to work. 
@@ -124,7 +129,7 @@ public class CyActivator extends AbstractCyActivator {
             bind(TunableSetter.class).toProvider(service(TunableSetter.class).single());
             bind(TunablePropertySerializerFactory.class).toProvider(service(TunablePropertySerializerFactory.class).single());
             
-            install(new FactoryModuleBuilder().build(DialogTestActionFactory.class));
+            install(new FactoryModuleBuilder().build(ActionFactory.class));
         }
     }
     

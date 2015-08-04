@@ -8,11 +8,11 @@ import org.baderlab.tt.internal.tunables.Line;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.properties.TunablePropertySerializer;
 import org.cytoscape.work.properties.TunablePropertySerializerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * This is an example of restoring properties, modifying them 
@@ -23,36 +23,28 @@ import com.google.inject.Inject;
  *
  */
 @SuppressWarnings("serial")
-public class SessionPropertyTestAction extends AbstractCyAction {
+public class PropertyTestAction extends AbstractCyAction {
 
-    public static final String CY_PROPERTY_NAME = "test-line";
-    
     @Inject private TunablePropertySerializerFactory serializerFactory;
-    @Inject private CySessionManager sessionManager;
-    @Inject private DialogTestActionFactory dialogFactory;
+    @Inject private ActionFactory actionFactory;
 
-    @Inject
-    public SessionPropertyTestAction(CyApplicationManager applicationManager) {
-        this("Session Property Test", applicationManager);
+    private final PropertyGetter propertyGetter;
+    
+    
+    public interface PropertyGetter {
+        Optional<CyProperty<Properties>> getCyProperty();
     }
     
-    public SessionPropertyTestAction(String title, CyApplicationManager applicationManager) {
+    
+    @Inject
+    public PropertyTestAction(CyApplicationManager applicationManager, @Assisted String title, @Assisted PropertyGetter propertyGetter) {
         super(title, applicationManager, null, null);
+        this.propertyGetter = propertyGetter;
     }
 
     
     public void actionPerformed(ActionEvent e) {
-        getCyProperty().ifPresent(this::processLineTunable);
-    }
-    
-    
-    @SuppressWarnings("unchecked")
-    protected Optional<CyProperty<Properties>> getCyProperty() {
-        return sessionManager.getCurrentSession().getProperties()
-                .stream()
-                .filter(p -> CY_PROPERTY_NAME.equals(p.getName()))
-                .findAny()
-                .map(p -> (CyProperty<Properties>) p);
+        propertyGetter.getCyProperty().ifPresent(this::processLineTunable);
     }
     
     
@@ -67,12 +59,14 @@ public class SessionPropertyTestAction extends AbstractCyAction {
         Properties propsBefore = cyProperty.getProperties();
         print("Properties Before", propsBefore);
         
-        // use the Properties to restore the values of the Tunable fields
-        tunablePropertySerailzer.setTunables(line, propsBefore);
-        print("Restored Line Properties", line);
+        if(!propsBefore.isEmpty()) {
+            // use the Properties to restore the values of the Tunable fields
+            tunablePropertySerailzer.setTunables(line, propsBefore);
+            print("Restored Line Properties", line);
+        }
         
         // show the dialog
-        DialogTestAction action = dialogFactory.create("Restored Line Properties", line);
+        DialogTestAction action = actionFactory.createDialogTestAction("Restored Line Properties", line);
         action.setShowResultPopup(false);
         action.showDialog();
         print("Modified Line Properties", line);
