@@ -77,6 +77,8 @@ public class PropertyGetterFactory {
     }
     
     
+    private PropsReader propsReader = null;
+    
     /**
      * Read CyProperty from config dir, but do it dynamically using service registrar.
      */
@@ -84,12 +86,12 @@ public class PropertyGetterFactory {
         return new PropertyGetter() {
             @Override
             public Optional<CyProperty<Properties>> getCyProperty() {
-                PropsReader propsReader = new PropsReader(CY_PROPERTY_NAME_CONFIGDIR_REGISTRAR);
-                
-                Properties props = new Properties();
-                props.setProperty("cyPropertyName", propsReader.getName());
-                serviceRegistrar.registerAllServices(propsReader, props);
-                
+                if(propsReader == null) {
+                    PropsReader propsReader = new PropsReader(CY_PROPERTY_NAME_CONFIGDIR_REGISTRAR);
+                    Properties props = new Properties();
+                    props.setProperty("cyPropertyName", propsReader.getName());
+                    serviceRegistrar.registerAllServices(propsReader, props);
+                }
                 return Optional.of(propsReader);
             }
         };
