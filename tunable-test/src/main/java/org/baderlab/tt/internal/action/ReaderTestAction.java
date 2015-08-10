@@ -22,7 +22,7 @@ public class ReaderTestAction extends AbstractCyAction {
 
     @Inject
     public ReaderTestAction(CyApplicationManager applicationManager) {
-        super("Property Reader Test", applicationManager, null, null);
+        super("Restore Tunables Test", applicationManager, null, null);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -41,6 +41,10 @@ public class ReaderTestAction extends AbstractCyAction {
         props.setProperty("intRange", "1");
         props.setProperty("doubleRange", "0.1");
         props.setProperty("names", "Max,Fred");
+        props.setProperty("listSingleEnum", "MAYBE");
+        
+        // key is there, value is not, please no NPE
+        props.setProperty("missingNames", "");
         
         
         tunablePropertySerailzer.setTunables(tunables, props);

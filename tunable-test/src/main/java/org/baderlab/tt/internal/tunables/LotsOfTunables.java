@@ -26,6 +26,9 @@ public class LotsOfTunables {
     
     @Tunable
     public ListMultipleSelection<String> names = new ListMultipleSelection<>("Fred", "Mark", "Max", "Nancy", "Ester");
+    
+    @Tunable
+    public ListSingleSelection<YesNoMaybe> listSingleEnum = new ListSingleSelection<>(YesNoMaybe.YES, YesNoMaybe.NO, YesNoMaybe.MAYBE);
 
     @Tunable
     public BoundedInteger intRange = new BoundedInteger(0, 5, 9, true, true);
@@ -33,14 +36,25 @@ public class LotsOfTunables {
     @Tunable
     public BoundedDouble doubleRange = new BoundedDouble(0.0, 0.5, 1.0, true, true);
 
+    // This one is missing from the Properties
+    @Tunable 
+    public int missing;
+    
+    @Tunable
+    public ListSingleSelection<Integer> missingListSS = new ListSingleSelection<>(1,2,3,4);
+    
+    @Tunable
+    public ListMultipleSelection<String> missingNames = new ListMultipleSelection<>("Fred", "Mark", "Max", "Nancy", "Ester");
+    
+    
     
     @Override
     public String toString() {
         return "LotsOfTunables [line=" + line + ", yesNoMaybe=" + yesNoMaybe + ", what=" + what + ", str=" + str
-                + ", numbers=" + numbers.getSelectedValue() + ", names=" + names.getSelectedValues() + 
-                ", intRange=" + intRange.getValue() + ", doubleRange=" + doubleRange.getValue() + "]";
+                + ", numbers=" + numbers + ", names=" + names + ", listSingleEnum=" + listSingleEnum + ", intRange="
+                + intRange + ", doubleRange=" + doubleRange + "]";
     }
-    
+
     
     
 }

@@ -3,8 +3,8 @@ package org.baderlab.tt.internal.action;
 import java.awt.event.ActionEvent;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Supplier;
 
-import org.baderlab.tt.internal.tunables.Line;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.property.CyProperty;
@@ -29,6 +29,7 @@ public class PropertyTestAction extends AbstractCyAction {
     @Inject private ActionFactory actionFactory;
 
     private final PropertyGetter propertyGetter;
+    private final Supplier<?> tunableProvider;
     
     
     public interface PropertyGetter {
@@ -37,9 +38,11 @@ public class PropertyTestAction extends AbstractCyAction {
     
     
     @Inject
-    public PropertyTestAction(CyApplicationManager applicationManager, @Assisted String title, @Assisted PropertyGetter propertyGetter) {
+    public PropertyTestAction(CyApplicationManager applicationManager, @Assisted String title, 
+                              @Assisted Supplier<? extends Object> tunables, @Assisted PropertyGetter propertyGetter) {
         super(title, applicationManager, null, null);
         this.propertyGetter = propertyGetter;
+        this.tunableProvider = tunables;
     }
 
     
@@ -52,8 +55,8 @@ public class PropertyTestAction extends AbstractCyAction {
         TunablePropertySerializer tunablePropertySerailzer = serializerFactory.createSerializer();
         
         // initialize a fresh object with Tunable fields
-        Line line = new Line();
-        print("New Line Object", line);
+        Object tunables = tunableProvider.get();
+        print("New Object", tunables);
         
         // get the saved Properties
         Properties propsBefore = cyProperty.getProperties();
@@ -61,18 +64,18 @@ public class PropertyTestAction extends AbstractCyAction {
         
         if(!propsBefore.isEmpty()) {
             // use the Properties to restore the values of the Tunable fields
-            tunablePropertySerailzer.setTunables(line, propsBefore);
-            print("Restored Line Properties", line);
+            tunablePropertySerailzer.setTunables(tunables, propsBefore);
+            print("Restored Properties", tunables);
         }
         
         // show the dialog
-        DialogTestAction action = actionFactory.createDialogTestAction("Restored Line Properties", line);
+        DialogTestAction action = actionFactory.createDialogTestAction("Restored Properties", tunables);
         action.setShowResultPopup(false);
         action.showDialog();
-        print("Modified Line Properties", line);
+        print("Modified Properties", tunables);
         
         // convert the new Tunable values into a Properties object
-        Properties propsAfter = tunablePropertySerailzer.toProperties(line);
+        Properties propsAfter = tunablePropertySerailzer.toProperties(tunables);
         print("Properties After", propsAfter);
         
         // save the properties

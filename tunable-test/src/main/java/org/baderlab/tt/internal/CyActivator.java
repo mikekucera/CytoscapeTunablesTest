@@ -11,16 +11,18 @@ import org.baderlab.tt.internal.action.PropertyGetterFactory;
 import org.baderlab.tt.internal.action.ReaderTestAction;
 import org.baderlab.tt.internal.action.SetterTestAction;
 import org.baderlab.tt.internal.action.WriterTestAction;
-import org.baderlab.tt.internal.action.YesNoMaybeHandler;
 import org.baderlab.tt.internal.layout.NothingLayoutAlgorithm;
 import org.baderlab.tt.internal.task.ShiftNodeViewTaskFactory;
+import org.baderlab.tt.internal.tunables.BadTunables;
 import org.baderlab.tt.internal.tunables.Line;
 import org.baderlab.tt.internal.tunables.Vote;
 import org.baderlab.tt.internal.tunables.YesNoMaybe;
+import org.baderlab.tt.internal.tunables.YesNoMaybeHandler;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.CyProperty.SavePolicy;
 import org.cytoscape.property.SimpleCyProperty;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -43,22 +45,30 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 public class CyActivator extends AbstractCyActivator {
 
+    public static final String CY_PROPERTY_SESSION = "test-line";
+    public static final String CY_PROPERTY_SESSION_REGISTRAR = "test-line-registrar2";
+    public static final String CY_PROPERTY_CONFIGDIR_REGISTRAR = "test-line-configdir";
+    public static final String CY_PROPERTY_CONFIGDIR_BAD = "test-badtunables-configdir";
+    
+    
     @Override
     public void start(BundleContext bc) throws Exception {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         ActionFactory actionFactory = injector.getInstance(ActionFactory.class);
-        PropertyGetterFactory propertyGetterFactory = injector.getInstance(PropertyGetterFactory.class);
+        PropertyGetterFactory getterFactory = injector.getInstance(PropertyGetterFactory.class);
+        
         
         registerMenuAction(bc, actionFactory.createDialogTestAction("Line Dialog Test", new Line()));
         registerMenuAction(bc, actionFactory.createDialogTestAction("Vote Dialog Test", new Vote()));
         registerMenuAction(bc, injector.getInstance(SetterTestAction.class));
         registerMenuAction(bc, injector.getInstance(WriterTestAction.class));
         registerMenuAction(bc, injector.getInstance(ReaderTestAction.class));
-        registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Action", propertyGetterFactory.sessionGetter()));
-        registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Registrar Action", propertyGetterFactory.registrarSessionGetter()));
-        registerMenuAction(bc, actionFactory.createPropertyTestAction("Config Dir Property Registrar Action", propertyGetterFactory.configDirRegistrarGetter()));
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Action", ()->new Line(), getterFactory.session(CY_PROPERTY_SESSION))); // requires CyProperty be registered below
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Registrar Action", ()->new Line(), getterFactory.registrarSession(CY_PROPERTY_SESSION_REGISTRAR)));
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Config Dir Property Registrar Action", ()->new Line(), getterFactory.configDirRegistrar(CY_PROPERTY_CONFIGDIR_REGISTRAR)));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
+        registerMenuAction(bc, actionFactory.createPropertyTestAction("Bad Tunable Test", ()->new BadTunables(), getterFactory.registrarSession(CY_PROPERTY_CONFIGDIR_BAD)));
         
         
         // A custom GUI tunable handler that provides a set of radio buttons for the YesNoMaybe enum.
@@ -78,10 +88,9 @@ public class CyActivator extends AbstractCyActivator {
         defaultProps.put("startPoint.y", "10");
         defaultProps.put("endPoint.x", "11");
         defaultProps.put("endPoint.y", "12");
-        CyProperty<Properties> sessionProps = new SimpleCyProperty<>(PropertyGetterFactory.CY_PROPERTY_NAME_SESSION, defaultProps, 
-                                                                     Properties.class, CyProperty.SavePolicy.SESSION_FILE_AND_CONFIG_DIR);
+        CyProperty<Properties> sessionProps = new SimpleCyProperty<>(CY_PROPERTY_SESSION, defaultProps, Properties.class, SavePolicy.SESSION_FILE_AND_CONFIG_DIR);
         Properties serviceProps = new Properties();
-        serviceProps.setProperty("cyPropertyName", PropertyGetterFactory.CY_PROPERTY_NAME_SESSION + ".props");
+        serviceProps.setProperty("cyPropertyName", CY_PROPERTY_SESSION + ".props");
         registerAllServices(bc, sessionProps, serviceProps);
         
         

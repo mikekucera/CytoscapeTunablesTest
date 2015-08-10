@@ -22,7 +22,7 @@ public class WriterTestAction extends AbstractCyAction {
 
     @Inject
     public WriterTestAction(CyApplicationManager applicationManager) {
-        super("Property Writer Test", applicationManager, null, null);
+        super("Save Tunables Test", applicationManager, null, null);
     }
 
     public void actionPerformed(ActionEvent e) {

@@ -1,4 +1,4 @@
-package org.baderlab.tt.internal.action;
+package org.baderlab.tt.internal.tunables;
 
 import java.awt.FlowLayout;
 import java.lang.reflect.Field;
@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.baderlab.tt.internal.tunables.YesNoMaybe;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
 
