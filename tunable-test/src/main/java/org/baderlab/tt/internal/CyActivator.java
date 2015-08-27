@@ -11,6 +11,7 @@ import org.baderlab.tt.internal.action.PropertyGetterFactory;
 import org.baderlab.tt.internal.action.ReaderTestAction;
 import org.baderlab.tt.internal.action.SetterTestAction;
 import org.baderlab.tt.internal.action.WriterTestAction;
+import org.baderlab.tt.internal.action.WithServicesAction;
 import org.baderlab.tt.internal.layout.NothingLayoutAlgorithm;
 import org.baderlab.tt.internal.task.ShiftNodeViewTaskFactory;
 import org.baderlab.tt.internal.tunables.BadTunables;
@@ -69,7 +70,9 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Config Dir Property Registrar Action", ()->new Line(), getterFactory.configDirRegistrar(CY_PROPERTY_CONFIGDIR_REGISTRAR)));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Bad Tunable Test", ()->new BadTunables(), getterFactory.registrarSession(CY_PROPERTY_CONFIGDIR_BAD)));
-        
+
+        CyServiceRegistrar serviceRegistrar = getService(bc, CyServiceRegistrar.class);
+        registerMenuAction(bc, new WithServicesAction(serviceRegistrar));
         
         // A custom GUI tunable handler that provides a set of radio buttons for the YesNoMaybe enum.
         SimpleGUITunableHandlerFactory<YesNoMaybeHandler> yesNoMaybeHandlerFactory = 
