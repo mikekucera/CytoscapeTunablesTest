@@ -4,6 +4,7 @@ import static org.ops4j.peaberry.Peaberry.*;
 
 import java.util.Properties;
 
+import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.TablePrintAction;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
@@ -29,8 +30,8 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
-        TablePrintAction tablePrintAction = injector.getInstance(TablePrintAction.class);
-        registerMenuAction(bc, tablePrintAction);
+        registerMenuAction(bc, injector.getInstance(TablePrintAction.class));
+        registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
     }
     
     

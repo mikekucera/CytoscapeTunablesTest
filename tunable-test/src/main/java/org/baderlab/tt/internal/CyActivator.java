@@ -6,7 +6,6 @@ import static org.ops4j.peaberry.Peaberry.*;
 import java.util.Properties;
 
 import org.baderlab.tt.internal.action.ActionFactory;
-import org.baderlab.tt.internal.action.CreateLocalAttributeAction;
 import org.baderlab.tt.internal.action.PropertyGetterFactory;
 import org.baderlab.tt.internal.action.ReaderTestAction;
 import org.baderlab.tt.internal.action.SetterTestAction;
@@ -67,7 +66,6 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Action", ()->new Line(), getterFactory.session(CY_PROPERTY_SESSION))); // requires CyProperty be registered below
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Registrar Action", ()->new Line(), getterFactory.registrarSession(CY_PROPERTY_SESSION_REGISTRAR)));
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Config Dir Property Registrar Action", ()->new Line(), getterFactory.configDirRegistrar(CY_PROPERTY_CONFIGDIR_REGISTRAR)));
-        registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Bad Tunable Test", ()->new BadTunables(), getterFactory.registrarSession(CY_PROPERTY_CONFIGDIR_BAD)));
         
         
