@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.TablePrintAction;
+import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
@@ -32,6 +33,7 @@ public class CyActivator extends AbstractCyActivator {
         
         registerMenuAction(bc, injector.getInstance(TablePrintAction.class));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
+        registerMenuAction(bc, injector.getInstance(ThrowExceptionAction.class));
     }
     
     
