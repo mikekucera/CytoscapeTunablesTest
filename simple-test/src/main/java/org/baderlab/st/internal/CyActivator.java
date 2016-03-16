@@ -5,11 +5,13 @@ import static org.ops4j.peaberry.Peaberry.*;
 import java.util.Properties;
 
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
+import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
 import org.baderlab.st.internal.actions.TablePrintAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
@@ -34,6 +36,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(TablePrintAction.class));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         registerMenuAction(bc, injector.getInstance(ThrowExceptionAction.class));
+        registerMenuAction(bc, injector.getInstance(FirePaloadEventsOnEDTAction.class));
     }
     
     
@@ -56,11 +59,10 @@ public class CyActivator extends AbstractCyActivator {
             bind(CyServiceRegistrar.class).toProvider(service(CyServiceRegistrar.class).single());            
             bind(DialogTaskManager.class).toProvider(service(DialogTaskManager.class).single());
             bind(PanelTaskManager.class).toProvider(service(PanelTaskManager.class).single());
+            bind(CyEventHelper.class).toProvider(service(CyEventHelper.class).single());
             
             bind(TunableSetter.class).toProvider(service(TunableSetter.class).single());
             bind(TunablePropertySerializerFactory.class).toProvider(service(TunablePropertySerializerFactory.class).single());
-            
-//            install(new FactoryModuleBuilder().build(ActionFactory.class));
         }
     }
     
