@@ -7,12 +7,14 @@ import java.util.Properties;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
+import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.TablePrintAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
@@ -20,6 +22,7 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TunableSetter;
 import org.cytoscape.work.properties.TunablePropertySerializerFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
@@ -43,6 +46,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(ThrowExceptionAction.class));
         registerMenuAction(bc, injector.getInstance(FirePaloadEventsOnEDTAction.class));
         registerMenuAction(bc, injector.getInstance(CreateTablesWithViewSuidsAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintVisualMappingTypesAction.class));
     }
     
     
@@ -59,6 +63,7 @@ public class CyActivator extends AbstractCyActivator {
         @Override
         protected void configure() {
             bind(CyApplicationManager.class).toProvider(service(CyApplicationManager.class).single());
+            bind(CyNetworkManager.class).toProvider(service(CyNetworkManager.class).single());
             bind(CySwingApplication.class).toProvider(service(CySwingApplication.class).single());
             bind(UndoSupport.class).toProvider(service(UndoSupport.class).single());
             bind(CySessionManager.class).toProvider(service(CySessionManager.class).single());
@@ -66,6 +71,7 @@ public class CyActivator extends AbstractCyActivator {
             bind(DialogTaskManager.class).toProvider(service(DialogTaskManager.class).single());
             bind(PanelTaskManager.class).toProvider(service(PanelTaskManager.class).single());
             bind(CyEventHelper.class).toProvider(service(CyEventHelper.class).single());
+            bind(VisualMappingManager.class).toProvider(service(VisualMappingManager.class).single());
             
             bind(CyNetworkViewManager.class).toProvider(service(CyNetworkViewManager.class).single());
             bind(CyNetworkTableManager.class).toProvider(service(CyNetworkTableManager.class).single());
