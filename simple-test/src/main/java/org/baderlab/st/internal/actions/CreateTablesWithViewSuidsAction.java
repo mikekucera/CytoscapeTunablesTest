@@ -46,7 +46,7 @@ public class CreateTablesWithViewSuidsAction extends AbstractCyAction {
     public void actionPerformed(ActionEvent e) {
         Set<CyNetwork> networkSet = networkManager.getNetworkSet();
         for(CyNetwork network : networkSet) {
-            CyTable table = createTable(network, "testSuid");
+            CyTable table = createTable(network, "View SUIDs");
             table.createColumn(NET_SUID, Long.class, true);
             table.createColumn(NODE_SUID, Long.class, true);
             table.createColumn(EDGE_SUID, Long.class, true);
@@ -81,11 +81,13 @@ public class CreateTablesWithViewSuidsAction extends AbstractCyAction {
 
     private CyTable createTable(CyNetwork network, String namespace) {
         CyTable table = networkTableManager.getTable(network, CyNetwork.class, namespace);
-        if(table == null) {
-            table = tableFactory.createTable(namespace, "ID", Long.class, true, true);
-            networkTableManager.setTable(network, CyNetwork.class, namespace, table);
-            tableManager.addTable(table);
+        if(table != null) {
+            tableManager.deleteTable(table.getSUID());
         }
+        table = tableFactory.createTable(namespace, "ID", Long.class, true, true);
+        networkTableManager.setTable(network, CyNetwork.class, namespace, table);
+        tableManager.addTable(table);
+        
         return table;
     }
     
