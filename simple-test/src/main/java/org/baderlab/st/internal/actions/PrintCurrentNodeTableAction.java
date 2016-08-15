@@ -16,12 +16,12 @@ import com.google.inject.Inject;
 import static java.util.stream.Collectors.*;
 
 @SuppressWarnings("serial")
-public class TablePrintAction extends AbstractCyAction {
+public class PrintCurrentNodeTableAction extends AbstractCyAction {
 
     @Inject private CyApplicationManager applicationManager;
     
     @Inject
-    public TablePrintAction(CyApplicationManager applicationManager) {
+    public PrintCurrentNodeTableAction(CyApplicationManager applicationManager) {
         super("Print Current Node Table", applicationManager, null, null);
     }
     

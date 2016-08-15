@@ -5,12 +5,15 @@ import static org.ops4j.peaberry.Peaberry.service;
 
 import java.util.Properties;
 
+import org.baderlab.st.internal.actions.ClearUndoStackAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateSubnetworkAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
+import org.baderlab.st.internal.actions.PrintAllTablesAction;
+import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
-import org.baderlab.st.internal.actions.TablePrintAction;
+import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
@@ -44,13 +47,16 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
-        registerMenuAction(bc, injector.getInstance(TablePrintAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintCurrentNodeTableAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class));
+        registerMenuAction(bc, injector.getInstance(ReportNodeEdgeRemovalAction.class));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         registerMenuAction(bc, injector.getInstance(ThrowExceptionAction.class));
         registerMenuAction(bc, injector.getInstance(FirePaloadEventsOnEDTAction.class));
         registerMenuAction(bc, injector.getInstance(CreateTablesWithViewSuidsAction.class));
         registerMenuAction(bc, injector.getInstance(PrintVisualMappingTypesAction.class));
         registerMenuAction(bc, injector.getInstance(CreateSubnetworkAction.class));
+        registerMenuAction(bc, injector.getInstance(ClearUndoStackAction.class));
     }
     
     
