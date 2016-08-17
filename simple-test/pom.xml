@@ -4,7 +4,7 @@
 	<properties>
 		<bundle.symbolicName>org.baderlab.simple-test</bundle.symbolicName>
 		<bundle.namespace>org.baderlab.st</bundle.namespace>
-		<cyversion>3.3.0-SNAPSHOT</cyversion>
+		<cyversion>3.5.0-SNAPSHOT</cyversion>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -160,6 +160,47 @@
 			<version>3.0</version>
 		</dependency>
 
+
+		<!-- Testing -->
+	   	<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jukito</groupId>
+			<artifactId>jukito</artifactId>
+			<version>1.4.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.cytoscape</groupId>
+		    <artifactId>model-impl</artifactId>
+		    <version>${cyversion}</version>
+		    <type>test-jar</type>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.cytoscape</groupId>
+		    <artifactId>event-api</artifactId>
+		    <version>${cyversion}</version>
+		    <type>test-jar</type>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.cytoscape</groupId>
+		    <artifactId>model-impl</artifactId>
+		    <version>${cyversion}</version>
+		    <scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 </project>
