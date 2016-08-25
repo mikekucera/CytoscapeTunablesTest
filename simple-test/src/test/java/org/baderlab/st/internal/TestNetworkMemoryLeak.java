@@ -2,7 +2,6 @@ package org.baderlab.st.internal;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.NetworkTestSupport;
 import org.junit.Rule;
@@ -37,18 +36,18 @@ public class TestNetworkMemoryLeak {
     
     @Test
     public void testNetworkTestSupportMemoryLeak() throws Exception {
-        int N = 30;
-        for(int i = 0; i < N; i++) {
-            CyNetwork network = createNetwork();
-            
-            CyNetworkManager networkManager = networkTestSupport.getNetworkManager();
-            networkManager.addNetwork(network);
-            networkManager.destroyNetwork(network);
-            
-            System.out.println(new MemoryStatus());
-        }
-        
-        System.out.println("Done");
+//        int N = 30;
+//        for(int i = 0; i < N; i++) {
+//            CyNetwork network = createNetwork();
+//            
+//            CyNetworkManager networkManager = networkTestSupport.getNetworkManager();
+//            networkManager.addNetwork(network);
+//            networkManager.destroyNetwork(network);
+//            
+//            System.out.println(new MemoryStatus());
+//        }
+//        
+//        System.out.println("Done");
 //        Thread.sleep(30000);
     }
 
