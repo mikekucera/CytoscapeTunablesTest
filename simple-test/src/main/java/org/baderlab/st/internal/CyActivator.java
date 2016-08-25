@@ -15,9 +15,14 @@ import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
+import org.baderlab.st.internal.functions.Factorial;
+import org.baderlab.st.internal.functions.Fibonacci;
+import org.baderlab.st.internal.functions.FunctionRegisterListener;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.equations.Function;
+import org.cytoscape.equations.event.EquationFunctionAddedListener;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
@@ -57,6 +62,10 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(PrintVisualMappingTypesAction.class));
         registerMenuAction(bc, injector.getInstance(CreateSubnetworkAction.class));
         registerMenuAction(bc, injector.getInstance(ClearUndoStackAction.class));
+        
+        registerService(bc, new Factorial(), Function.class);
+        registerService(bc, new Fibonacci(), Function.class);
+        registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);
     }
     
     
