@@ -6,6 +6,7 @@ import static org.ops4j.peaberry.Peaberry.service;
 import java.util.Properties;
 
 import org.baderlab.st.internal.actions.ClearUndoStackAction;
+import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateSubnetworkAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
@@ -62,6 +63,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(PrintVisualMappingTypesAction.class));
         registerMenuAction(bc, injector.getInstance(CreateSubnetworkAction.class));
         registerMenuAction(bc, injector.getInstance(ClearUndoStackAction.class));
+        registerMenuAction(bc, injector.getInstance(CountTaskAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
