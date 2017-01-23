@@ -65,6 +65,10 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(ClearUndoStackAction.class));
         registerMenuAction(bc, injector.getInstance(CountTaskAction.class));
         
+        // Verify bug #3733
+
+        
+        
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
         registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);

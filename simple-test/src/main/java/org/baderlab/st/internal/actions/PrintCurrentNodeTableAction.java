@@ -1,24 +1,28 @@
 package org.baderlab.st.internal.actions;
 
+import static java.util.stream.Collectors.joining;
+
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
+
+import javax.swing.event.MenuEvent;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 import com.google.inject.Inject;
-import static java.util.stream.Collectors.*;
 
 @SuppressWarnings("serial")
 public class PrintCurrentNodeTableAction extends AbstractCyAction {
 
     @Inject private CyApplicationManager applicationManager;
+    @Inject private CyServiceRegistrar serviceRegistrar;
     
     @Inject
     public PrintCurrentNodeTableAction(CyApplicationManager applicationManager) {
@@ -44,6 +48,12 @@ public class PrintCurrentNodeTableAction extends AbstractCyAction {
         }
         
         System.out.println(out.toString());
+    }
+    
+    @Override
+    public void menuSelected(MenuEvent e) {
+        CySwingApplication swingApplication = serviceRegistrar.getService(CySwingApplication.class);
+        System.out.println("PrintCurrentNodeTableAction: " + swingApplication);
     }
 
 }

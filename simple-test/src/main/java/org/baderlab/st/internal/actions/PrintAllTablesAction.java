@@ -3,8 +3,11 @@ package org.baderlab.st.internal.actions;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 
+import javax.swing.event.MenuEvent;
+
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
@@ -14,6 +17,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 import com.google.inject.Inject;
 
@@ -22,6 +26,7 @@ public class PrintAllTablesAction extends AbstractCyAction {
 
     @Inject private CyApplicationManager applicationManager;
     @Inject private CyNetworkTableManager networkTableManager;
+    @Inject private CyServiceRegistrar serviceRegistrar;
     
     @Inject
     public PrintAllTablesAction(CyApplicationManager applicationManager) {
@@ -68,4 +73,9 @@ public class PrintAllTablesAction extends AbstractCyAction {
         System.out.append(rs).append('\n');
     }
     
+    @Override
+    public void menuSelected(MenuEvent e) {
+        CySwingApplication swingApplication = serviceRegistrar.getService(CySwingApplication.class);
+        System.out.println("PrintAllTablesAction: " + swingApplication);
+    }
 }
