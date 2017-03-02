@@ -16,6 +16,7 @@ import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
+import org.baderlab.st.internal.actions.TunableTestAction;
 import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
@@ -55,6 +56,7 @@ public class CyActivator extends AbstractCyActivator {
         
         registerMenuAction(bc, injector.getInstance(PrintCurrentNodeTableAction.class));
         registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class).setPrintStructure(true));
         registerMenuAction(bc, injector.getInstance(ReportNodeEdgeRemovalAction.class));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         registerMenuAction(bc, injector.getInstance(ThrowExceptionAction.class));
@@ -64,9 +66,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(CreateSubnetworkAction.class));
         registerMenuAction(bc, injector.getInstance(ClearUndoStackAction.class));
         registerMenuAction(bc, injector.getInstance(CountTaskAction.class));
-        
-        // Verify bug #3733
-
+        registerMenuAction(bc, injector.getInstance(TunableTestAction.class));
         
         
         registerService(bc, new Factorial(), Function.class);

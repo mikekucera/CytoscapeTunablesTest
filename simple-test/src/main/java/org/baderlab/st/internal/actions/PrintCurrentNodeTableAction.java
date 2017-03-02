@@ -5,11 +5,8 @@ import static java.util.stream.Collectors.joining;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
-import javax.swing.event.MenuEvent;
-
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
-import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
@@ -50,10 +47,10 @@ public class PrintCurrentNodeTableAction extends AbstractCyAction {
         System.out.println(out.toString());
     }
     
-    @Override
-    public void menuSelected(MenuEvent e) {
-        CySwingApplication swingApplication = serviceRegistrar.getService(CySwingApplication.class);
-        System.out.println("PrintCurrentNodeTableAction: " + swingApplication);
-    }
+//    @Override
+//    public void menuSelected(MenuEvent e) {
+//        CySwingApplication swingApplication = serviceRegistrar.getService(CySwingApplication.class);
+//        System.out.println("PrintCurrentNodeTableAction: " + swingApplication);
+//    }
 
 }
