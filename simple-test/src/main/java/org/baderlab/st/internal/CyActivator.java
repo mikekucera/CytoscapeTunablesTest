@@ -17,6 +17,7 @@ import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.baderlab.st.internal.actions.TunableTestAction;
+import org.baderlab.st.internal.actions.TunableTestSyncAction;
 import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
@@ -36,6 +37,7 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TunableSetter;
 import org.cytoscape.work.properties.TunablePropertySerializerFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
@@ -46,6 +48,7 @@ import org.osgi.framework.BundleContext;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.TypeLiteral;
 
 public class CyActivator extends AbstractCyActivator {
 
@@ -67,7 +70,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(ClearUndoStackAction.class));
         registerMenuAction(bc, injector.getInstance(CountTaskAction.class));
         registerMenuAction(bc, injector.getInstance(TunableTestAction.class));
-        
+        registerMenuAction(bc, injector.getInstance(TunableTestSyncAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
@@ -106,6 +109,9 @@ public class CyActivator extends AbstractCyActivator {
             
             bindService(TunableSetter.class);
             bindService(TunablePropertySerializerFactory.class);
+            
+            TypeLiteral<SynchronousTaskManager<?>> synchronousManager = new TypeLiteral<SynchronousTaskManager<?>>(){};
+            bind(synchronousManager).toProvider(service(synchronousManager).single());
         }
         
         private <T> void bindService(Class<T> serviceClass) {

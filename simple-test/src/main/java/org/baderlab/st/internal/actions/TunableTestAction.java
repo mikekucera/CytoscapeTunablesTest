@@ -35,10 +35,22 @@ public class TunableTestAction extends AbstractCyAction {
         @Tunable(description="Are you happy?")
         public boolean happy;
 
+        @Tunable(description="Would you like to throw an exception?")
+        public boolean throwException = false;
+        
+        
         @Override
-        public void run(TaskMonitor taskMonitor) throws Exception {
+        public void run(TaskMonitor tm) throws Exception {
+            tm.setTitle("TaskWithTunables");
+            tm.setStatusMessage("This is a task with tunables!");
+            
             System.out.println("Feeling: " + feeling);
             System.out.println("Happy?: " + happy);
+            System.out.println("Throw Exception?: " + throwException);
+            
+            if(throwException) {
+                throw new RuntimeException("KABOOM!");            
+            }
         }
         
     }
