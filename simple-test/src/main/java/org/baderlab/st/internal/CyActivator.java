@@ -21,6 +21,7 @@ import org.baderlab.st.internal.actions.TunableTestSyncAction;
 import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
+import org.baderlab.st.internal.task.TestColorCommandTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
@@ -37,7 +38,9 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.ServiceProperties;
 import org.cytoscape.work.SynchronousTaskManager;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableSetter;
 import org.cytoscape.work.properties.TunablePropertySerializerFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
@@ -75,6 +78,8 @@ public class CyActivator extends AbstractCyActivator {
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
         registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);
+        
+        registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
     }
     
     
@@ -83,6 +88,13 @@ public class CyActivator extends AbstractCyActivator {
         registerAllServices(bc, action, new Properties());
     }
     
+    
+    private void registerCommand(BundleContext context, String name, TaskFactory factory) {
+        Properties props = new Properties();
+        props.put(ServiceProperties.COMMAND, name);
+        props.put(ServiceProperties.COMMAND_NAMESPACE, "simpletest");
+        registerService(context, factory, TaskFactory.class, props);
+    }
     
     /**
      * Guice module.

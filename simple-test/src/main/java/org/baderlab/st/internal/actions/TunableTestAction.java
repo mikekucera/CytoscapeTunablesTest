@@ -38,7 +38,7 @@ public class TunableTestAction extends AbstractCyAction {
         @Tunable(description="Would you like to throw an exception?")
         public boolean throwException = false;
         
-        
+                
         @Override
         public void run(TaskMonitor tm) throws Exception {
             tm.setTitle("TaskWithTunables");
