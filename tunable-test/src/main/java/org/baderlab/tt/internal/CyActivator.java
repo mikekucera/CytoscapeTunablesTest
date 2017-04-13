@@ -1,11 +1,14 @@
 package org.baderlab.tt.internal;
 
-import static org.cytoscape.work.ServiceProperties.*;
-import static org.ops4j.peaberry.Peaberry.*;
+import static org.cytoscape.work.ServiceProperties.MENU_GRAVITY;
+import static org.cytoscape.work.ServiceProperties.TITLE;
+import static org.ops4j.peaberry.Peaberry.osgiModule;
+import static org.ops4j.peaberry.Peaberry.service;
 
 import java.util.Properties;
 
 import org.baderlab.tt.internal.action.ActionFactory;
+import org.baderlab.tt.internal.action.ObjectReuseAction;
 import org.baderlab.tt.internal.action.PropertyGetterFactory;
 import org.baderlab.tt.internal.action.ReaderTestAction;
 import org.baderlab.tt.internal.action.SetterTestAction;
@@ -67,6 +70,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Session Property Registrar Action", ()->new Line(), getterFactory.registrarSession(CY_PROPERTY_SESSION_REGISTRAR)));
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Config Dir Property Registrar Action", ()->new Line(), getterFactory.configDirRegistrar(CY_PROPERTY_CONFIGDIR_REGISTRAR)));
         registerMenuAction(bc, actionFactory.createPropertyTestAction("Bad Tunable Test", ()->new BadTunables(), getterFactory.registrarSession(CY_PROPERTY_CONFIGDIR_BAD)));
+        registerMenuAction(bc, injector.getInstance(ObjectReuseAction.class));
         
         
         // A custom GUI tunable handler that provides a set of radio buttons for the YesNoMaybe enum.

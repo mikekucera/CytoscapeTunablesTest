@@ -10,6 +10,7 @@ import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateSubnetworkAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
+import org.baderlab.st.internal.actions.EnvVarAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
@@ -74,6 +75,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(CountTaskAction.class));
         registerMenuAction(bc, injector.getInstance(TunableTestAction.class));
         registerMenuAction(bc, injector.getInstance(TunableTestSyncAction.class));
+        registerMenuAction(bc, injector.getInstance(EnvVarAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
