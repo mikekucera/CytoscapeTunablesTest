@@ -16,6 +16,7 @@ import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
+import org.baderlab.st.internal.actions.TestRestoreEdgeAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.baderlab.st.internal.actions.TunableTestAction;
 import org.baderlab.st.internal.actions.TunableTestSyncAction;
@@ -34,9 +35,12 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.ServiceProperties;
@@ -76,6 +80,7 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(TunableTestAction.class));
         registerMenuAction(bc, injector.getInstance(TunableTestSyncAction.class));
         registerMenuAction(bc, injector.getInstance(EnvVarAction.class));
+        registerMenuAction(bc, injector.getInstance(TestRestoreEdgeAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
@@ -120,6 +125,9 @@ public class CyActivator extends AbstractCyActivator {
             bindService(CyNetworkTableManager.class);
             bindService(CyTableManager.class);
             bindService(CyTableFactory.class);
+            bindService(CyRootNetworkManager.class);
+            bindService(CyNetworkViewFactory.class);
+            bindService(CyLayoutAlgorithmManager.class);
             
             bindService(TunableSetter.class);
             bindService(TunablePropertySerializerFactory.class);

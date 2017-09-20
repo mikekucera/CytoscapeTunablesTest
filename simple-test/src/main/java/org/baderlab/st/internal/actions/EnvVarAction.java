@@ -13,9 +13,16 @@ public class EnvVarAction extends AbstractCyAction {
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("Environment Variables");
         System.getenv().forEach((var, value) -> {
            System.out.println(var + "=" + value); 
         });
+        
+        System.out.println("\nSystem Properties");
+        System.getProperties().forEach((var, value) -> {
+            System.out.println(var + "=" + value);
+        });
     }
+    
 
 }
