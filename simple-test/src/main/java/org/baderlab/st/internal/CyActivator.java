@@ -8,9 +8,11 @@ import java.util.Properties;
 import org.baderlab.st.internal.actions.ClearUndoStackAction;
 import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
+import org.baderlab.st.internal.actions.CreateNetworkTableAction;
 import org.baderlab.st.internal.actions.CreateSubnetworkAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
 import org.baderlab.st.internal.actions.EnvVarAction;
+import org.baderlab.st.internal.actions.FindNodeNamedAAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
@@ -81,6 +83,8 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(TunableTestSyncAction.class));
         registerMenuAction(bc, injector.getInstance(EnvVarAction.class));
         registerMenuAction(bc, injector.getInstance(TestRestoreEdgeAction.class));
+        registerMenuAction(bc, injector.getInstance(FindNodeNamedAAction.class));
+        registerMenuAction(bc, injector.getInstance(CreateNetworkTableAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
