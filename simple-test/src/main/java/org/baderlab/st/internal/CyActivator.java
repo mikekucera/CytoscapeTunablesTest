@@ -6,6 +6,7 @@ import static org.ops4j.peaberry.Peaberry.service;
 import java.util.Properties;
 
 import org.baderlab.st.internal.actions.ClearUndoStackAction;
+import org.baderlab.st.internal.actions.ColumnSetAllAction;
 import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateNetworkTableAction;
@@ -67,6 +68,7 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(ColumnSetAllAction.class));
         registerMenuAction(bc, injector.getInstance(PrintCurrentNodeTableAction.class));
         registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class));
         registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class).setPrintStructure(true));
