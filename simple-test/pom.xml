@@ -4,7 +4,7 @@
 	<properties>
 		<bundle.symbolicName>org.baderlab.simple-test</bundle.symbolicName>
 		<bundle.namespace>org.baderlab.st</bundle.namespace>
-		<cyversion>3.6.0-SNAPSHOT</cyversion>
+		<cyversion>3.6.0</cyversion>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -126,6 +126,11 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
+			<version>${cyversion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-util-api</artifactId>
 			<version>${cyversion}</version>
 		</dependency>
 		<dependency>

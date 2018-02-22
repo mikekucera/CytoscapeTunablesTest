@@ -52,7 +52,7 @@ public class ColumnSetAllAction extends AbstractCyAction {
             CyColumn column = inputPanel.getColumn();
             Object value = inputPanel.getValue();
             
-            column.replaceAll(value, column.getType());
+//            column.replaceAll(value, column.getType());
         }
     }
 
