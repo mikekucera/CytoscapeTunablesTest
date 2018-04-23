@@ -2,7 +2,7 @@ package org.baderlab.st.internal.actions;
 
 import java.awt.event.ActionEvent;
 
-import org.baderlab.st.internal.task.CountTask;
+import org.baderlab.st.internal.commands.CountTask;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.swing.DialogTaskManager;

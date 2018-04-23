@@ -1,4 +1,4 @@
-package org.baderlab.st.internal.task;
+package org.baderlab.st.internal.commands;
 
 import java.awt.Color;
 

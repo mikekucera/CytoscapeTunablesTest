@@ -24,14 +24,17 @@ import org.baderlab.st.internal.actions.TestRestoreEdgeAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
 import org.baderlab.st.internal.actions.TunableTestAction;
 import org.baderlab.st.internal.actions.TunableTestSyncAction;
+import org.baderlab.st.internal.actions.WriteToLogCommandAction;
 import org.baderlab.st.internal.commands.ReturnJSONTaskFactory;
+import org.baderlab.st.internal.commands.TestColorCommandTaskFactory;
+import org.baderlab.st.internal.commands.WriteToLogTaskFactory;
 import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
-import org.baderlab.st.internal.task.TestColorCommandTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.event.EquationFunctionAddedListener;
 import org.cytoscape.event.CyEventHelper;
@@ -91,13 +94,14 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(FindNodeNamedAAction.class));
         registerMenuAction(bc, injector.getInstance(CreateNetworkTableAction.class));
         registerMenuAction(bc, injector.getInstance(TestBadURLAction.class));
+        registerMenuAction(bc, injector.getInstance(WriteToLogCommandAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
         registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);
         
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
-        
+        registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
         
         Properties props = new Properties();
         props.put(ServiceProperties.COMMAND, "test-contains-tunables");
@@ -106,7 +110,7 @@ public class CyActivator extends AbstractCyActivator {
         registerService(bc, new ReturnJSONTaskFactory(), TaskFactory.class, props);
     }
     
-    
+
     private void registerMenuAction(BundleContext bc, AbstractCyAction action) {
         action.setPreferredMenu("Apps.Simple Test");
         registerAllServices(bc, action, new Properties());
@@ -117,6 +121,7 @@ public class CyActivator extends AbstractCyActivator {
         Properties props = new Properties();
         props.put(ServiceProperties.COMMAND, name);
         props.put(ServiceProperties.COMMAND_NAMESPACE, "simpletest");
+        props.put(ServiceProperties.COMMAND_LONG_DESCRIPTION, "this is **bold** this is *italic*");
         registerService(context, factory, TaskFactory.class, props);
     }
     
@@ -146,6 +151,7 @@ public class CyActivator extends AbstractCyActivator {
             bindService(CyRootNetworkManager.class);
             bindService(CyNetworkViewFactory.class);
             bindService(CyLayoutAlgorithmManager.class);
+            bindService(CommandExecutorTaskFactory.class);
             
             bindService(TunableSetter.class);
             bindService(TunablePropertySerializerFactory.class);

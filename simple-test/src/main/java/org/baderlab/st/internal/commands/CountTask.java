@@ -1,4 +1,4 @@
-package org.baderlab.st.internal.task;
+package org.baderlab.st.internal.commands;
 
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
