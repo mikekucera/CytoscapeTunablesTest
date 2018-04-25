@@ -33,6 +33,7 @@ import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CyColumnPresentation;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.equations.Function;
@@ -103,11 +104,23 @@ public class CyActivator extends AbstractCyActivator {
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
         
-        Properties props = new Properties();
-        props.put(ServiceProperties.COMMAND, "test-contains-tunables");
-        props.put(ServiceProperties.COMMAND_NAMESPACE, "simpletest");
-        props.put(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
-        registerService(bc, new ReturnJSONTaskFactory(), TaskFactory.class, props);
+        {
+            Properties props = new Properties();
+            props.put(ServiceProperties.COMMAND, "test-contains-tunables");
+            props.put(ServiceProperties.COMMAND_NAMESPACE, "simpletest");
+            props.put(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+            registerService(bc, new ReturnJSONTaskFactory(), TaskFactory.class, props);
+        }
+        {
+            Properties props = new Properties();
+            props.put(CyColumnPresentation.NAMESPACE, "simple");
+            registerService(bc, new SimpleColumnPresentaiton("thumbs_up_16.png"), CyColumnPresentation.class, props);
+        }
+        {
+            Properties props = new Properties();
+            props.put(CyColumnPresentation.NAMESPACE, "simple128");
+            registerService(bc, new SimpleColumnPresentaiton("thumbs_up_128.png"), CyColumnPresentation.class, props);
+        }
     }
     
 

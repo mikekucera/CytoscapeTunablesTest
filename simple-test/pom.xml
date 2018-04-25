@@ -4,7 +4,7 @@
 	<properties>
 		<bundle.symbolicName>org.baderlab.simple-test</bundle.symbolicName>
 		<bundle.namespace>org.baderlab.st</bundle.namespace>
-		<cyversion>3.6.0</cyversion>
+		<cyversion>3.7.0-SNAPSHOT</cyversion>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
