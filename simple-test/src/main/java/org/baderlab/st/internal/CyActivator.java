@@ -5,11 +5,13 @@ import static org.ops4j.peaberry.Peaberry.service;
 
 import java.util.Properties;
 
+import org.baderlab.st.internal.actions.ApplyVisualStyleAction;
 import org.baderlab.st.internal.actions.ClearUndoStackAction;
 import org.baderlab.st.internal.actions.ColumnSetAllAction;
 import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateNetworkTableAction;
+import org.baderlab.st.internal.actions.CreateNodeAction;
 import org.baderlab.st.internal.actions.CreateSubnetworkAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
 import org.baderlab.st.internal.actions.EnvVarAction;
@@ -37,6 +39,7 @@ import org.baderlab.st.internal.functions.FunctionRegisterListener;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.search.NetworkSearchTaskFactory;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.event.EquationFunctionAddedListener;
@@ -73,7 +76,7 @@ import com.google.inject.TypeLiteral;
 public class CyActivator extends AbstractCyActivator {
 
     @Override
-    public void start(BundleContext bc) throws Exception {
+    public void start(BundleContext bc) {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
@@ -101,10 +104,14 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(RowsSetListenAction.class));
         registerMenuAction(bc, injector.getInstance(ViewChangedListenAction.class));
         registerMenuAction(bc, injector.getInstance(NetworkViewUpdateAction.class));
+        registerMenuAction(bc, injector.getInstance(CreateNodeAction.class));
+        registerMenuAction(bc, injector.getInstance(ApplyVisualStyleAction.class));
         
         registerService(bc, new Factorial(), Function.class);
         registerService(bc, new Fibonacci(), Function.class);
         registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);
+        
+        registerService(bc, new SimpleNetworkSearchBar(), NetworkSearchTaskFactory.class);
         
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
