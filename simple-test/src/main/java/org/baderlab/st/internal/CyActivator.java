@@ -22,6 +22,7 @@ import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
+import org.baderlab.st.internal.actions.RowsSetFacadeTestAction;
 import org.baderlab.st.internal.actions.RowsSetListenAction;
 import org.baderlab.st.internal.actions.TestBadURLAction;
 import org.baderlab.st.internal.actions.TestRestoreEdgeAction;
@@ -49,6 +50,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -80,6 +82,7 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(RowsSetFacadeTestAction.class));
         registerMenuAction(bc, injector.getInstance(ColumnSetAllAction.class));
         registerMenuAction(bc, injector.getInstance(PrintCurrentNodeTableAction.class));
         registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class));
@@ -112,6 +115,7 @@ public class CyActivator extends AbstractCyActivator {
         registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);
         
         registerService(bc, new SimpleNetworkSearchBar(), NetworkSearchTaskFactory.class);
+        registerService(bc, new SimpleRowsSetListener(), RowsSetListener.class);
         
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
