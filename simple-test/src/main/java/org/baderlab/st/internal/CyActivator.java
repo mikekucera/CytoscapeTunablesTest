@@ -3,6 +3,7 @@ package org.baderlab.st.internal;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 
+import java.net.URL;
 import java.util.Properties;
 
 import org.baderlab.st.internal.actions.ApplyVisualStyleAction;
@@ -17,6 +18,8 @@ import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
 import org.baderlab.st.internal.actions.EnvVarAction;
 import org.baderlab.st.internal.actions.FindNodeNamedAAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
+import org.baderlab.st.internal.actions.HideAAction;
+import org.baderlab.st.internal.actions.HideUnBAction;
 import org.baderlab.st.internal.actions.NetworkViewUpdateAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
@@ -37,6 +40,7 @@ import org.baderlab.st.internal.commands.WriteToLogTaskFactory;
 import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
+import org.baderlab.st.internal.toolbar.SayHelloTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
@@ -55,6 +59,8 @@ import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.task.hide.HideTaskFactory;
+import org.cytoscape.task.hide.UnHideTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -81,6 +87,9 @@ public class CyActivator extends AbstractCyActivator {
     public void start(BundleContext bc) {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
+        
+        registerMenuAction(bc, injector.getInstance(HideAAction.class), "Hide Task API");
+        registerMenuAction(bc, injector.getInstance(HideUnBAction.class), "Hide Task API");
         
         registerMenuAction(bc, injector.getInstance(RowsSetFacadeTestAction.class));
         registerMenuAction(bc, injector.getInstance(ColumnSetAllAction.class));
@@ -120,6 +129,8 @@ public class CyActivator extends AbstractCyActivator {
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
         
+        registerToolBarButton(bc);
+        
         {
             Properties props = new Properties();
             props.put(ServiceProperties.COMMAND, "test-contains-tunables");
@@ -139,9 +150,27 @@ public class CyActivator extends AbstractCyActivator {
 //        }
     }
     
+    private void registerToolBarButton(BundleContext bc) {
+        TaskFactory taskFactory = new SayHelloTaskFactory();
+        Properties props = new Properties();
+        props.setProperty(ServiceProperties.IN_TOOL_BAR, "true");
+        props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "0.0f");
+        props.setProperty(ServiceProperties.TOOLTIP, "Say Hello");
+        URL pngFile = getClass().getClassLoader().getResource("thumbs_up_16.png");
+        props.setProperty(ServiceProperties.LARGE_ICON_URL, pngFile.toString());
+        props.setProperty(ServiceProperties.SMALL_ICON_URL, pngFile.toString());
+        props.setProperty(ServiceProperties.INSERT_TOOLBAR_SEPARATOR_BEFORE, "true");
+        props.setProperty(ServiceProperties.INSERT_TOOLBAR_SEPARATOR_AFTER, "true");
+        registerService(bc, taskFactory, TaskFactory.class, props);
+    }
 
     private void registerMenuAction(BundleContext bc, AbstractCyAction action) {
         action.setPreferredMenu("Apps.Simple Test");
+        registerAllServices(bc, action, new Properties());
+    }
+    
+    private void registerMenuAction(BundleContext bc, AbstractCyAction action, String subMenu) {
+        action.setPreferredMenu("Apps.Simple Test."+subMenu);
         registerAllServices(bc, action, new Properties());
     }
     
@@ -171,6 +200,9 @@ public class CyActivator extends AbstractCyActivator {
             bindService(CyEventHelper.class);
             bindService(VisualMappingManager.class);
             bindService(OpenBrowser.class);
+            
+            bindService(HideTaskFactory.class);
+            bindService(UnHideTaskFactory.class);
             
             bindService(CyNetworkFactory.class);
             bindService(CyNetworkViewManager.class);
