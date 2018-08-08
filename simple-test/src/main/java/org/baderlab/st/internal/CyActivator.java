@@ -24,7 +24,6 @@ import org.baderlab.st.internal.actions.NetworkViewUpdateAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
-import org.baderlab.st.internal.actions.ReportNodeEdgeRemovalAction;
 import org.baderlab.st.internal.actions.RowsSetFacadeTestAction;
 import org.baderlab.st.internal.actions.RowsSetListenAction;
 import org.baderlab.st.internal.actions.TestBadURLAction;
@@ -34,7 +33,6 @@ import org.baderlab.st.internal.actions.TunableTestAction;
 import org.baderlab.st.internal.actions.TunableTestSyncAction;
 import org.baderlab.st.internal.actions.ViewChangedListenAction;
 import org.baderlab.st.internal.actions.WriteToLogCommandAction;
-import org.baderlab.st.internal.commands.ReturnJSONTaskFactory;
 import org.baderlab.st.internal.commands.TestColorCommandTaskFactory;
 import org.baderlab.st.internal.commands.WriteToLogTaskFactory;
 import org.baderlab.st.internal.functions.Factorial;
@@ -54,17 +52,18 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.session.events.SessionLoadedListener;
 import org.cytoscape.task.hide.HideTaskFactory;
 import org.cytoscape.task.hide.UnHideTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.presentation.customgraphics.CyCustomGraphicsFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.ServiceProperties;
 import org.cytoscape.work.SynchronousTaskManager;
@@ -96,7 +95,6 @@ public class CyActivator extends AbstractCyActivator {
         registerMenuAction(bc, injector.getInstance(PrintCurrentNodeTableAction.class));
         registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class));
         registerMenuAction(bc, injector.getInstance(PrintAllTablesAction.class).setPrintStructure(true));
-        registerMenuAction(bc, injector.getInstance(ReportNodeEdgeRemovalAction.class));
         registerMenuAction(bc, injector.getInstance(CreateLocalAttributeAction.class));
         registerMenuAction(bc, injector.getInstance(ThrowExceptionAction.class));
         registerMenuAction(bc, injector.getInstance(FirePaloadEventsOnEDTAction.class));
@@ -124,30 +122,16 @@ public class CyActivator extends AbstractCyActivator {
         registerService(bc, new FunctionRegisterListener(), EquationFunctionAddedListener.class);
         
         registerService(bc, new SimpleNetworkSearchBar(), NetworkSearchTaskFactory.class);
-        registerService(bc, new SimpleRowsSetListener(), RowsSetListener.class);
         
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
         
-        registerToolBarButton(bc);
+        ChartFactoryManager chartFactoryManager = injector.getInstance(ChartFactoryManager.class);
+        registerServiceListener(bc, chartFactoryManager::addFactory, chartFactoryManager::removeFactory, CyCustomGraphicsFactory.class);
+        SessionCustomGraphicsListener customGraphicsListener = injector.getInstance(SessionCustomGraphicsListener.class);
+        registerService(bc, customGraphicsListener, SessionLoadedListener.class);
         
-        {
-            Properties props = new Properties();
-            props.put(ServiceProperties.COMMAND, "test-contains-tunables");
-            props.put(ServiceProperties.COMMAND_NAMESPACE, "simpletest");
-            props.put(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
-            registerService(bc, new ReturnJSONTaskFactory(), TaskFactory.class, props);
-        }
-//        {
-//            Properties props = new Properties();
-//            props.put(CyColumnPresentation.NAMESPACE, "simple");
-//            registerService(bc, new SimpleColumnPresentaiton("thumbs_up_16.png"), CyColumnPresentation.class, props);
-//        }
-//        {
-//            Properties props = new Properties();
-//            props.put(CyColumnPresentation.NAMESPACE, "simple128");
-//            registerService(bc, new SimpleColumnPresentaiton("thumbs_up_128.png"), CyColumnPresentation.class, props);
-//        }
+        registerToolBarButton(bc);
     }
     
     private void registerToolBarButton(BundleContext bc) {
