@@ -18,8 +18,6 @@ import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
 import org.baderlab.st.internal.actions.EnvVarAction;
 import org.baderlab.st.internal.actions.FindNodeNamedAAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
-import org.baderlab.st.internal.actions.HideAAction;
-import org.baderlab.st.internal.actions.HideUnBAction;
 import org.baderlab.st.internal.actions.NetworkViewUpdateAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
@@ -57,8 +55,6 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.session.events.SessionLoadedListener;
-import org.cytoscape.task.hide.HideTaskFactory;
-import org.cytoscape.task.hide.UnHideTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -86,9 +82,6 @@ public class CyActivator extends AbstractCyActivator {
     public void start(BundleContext bc) {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
-        
-        registerMenuAction(bc, injector.getInstance(HideAAction.class), "Hide Task API");
-        registerMenuAction(bc, injector.getInstance(HideUnBAction.class), "Hide Task API");
         
         registerMenuAction(bc, injector.getInstance(RowsSetFacadeTestAction.class));
         registerMenuAction(bc, injector.getInstance(ColumnSetAllAction.class));
@@ -184,10 +177,6 @@ public class CyActivator extends AbstractCyActivator {
             bindService(CyEventHelper.class);
             bindService(VisualMappingManager.class);
             bindService(OpenBrowser.class);
-            
-            bindService(HideTaskFactory.class);
-            bindService(UnHideTaskFactory.class);
-            
             bindService(CyNetworkFactory.class);
             bindService(CyNetworkViewManager.class);
             bindService(CyNetworkTableManager.class);
