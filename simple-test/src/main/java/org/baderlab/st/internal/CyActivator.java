@@ -36,6 +36,7 @@ import org.baderlab.st.internal.commands.WriteToLogTaskFactory;
 import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
+import org.baderlab.st.internal.layout.SimpleTestLayout;
 import org.baderlab.st.internal.toolbar.SayHelloTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
@@ -54,12 +55,11 @@ import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.session.events.SessionLoadedListener;
 import org.cytoscape.util.swing.OpenBrowser;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.customgraphics.CyCustomGraphicsFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.ServiceProperties;
 import org.cytoscape.work.SynchronousTaskManager;
@@ -119,12 +119,9 @@ public class CyActivator extends AbstractCyActivator {
         registerCommand(bc, "shape-color", injector.getInstance(TestColorCommandTaskFactory.class));
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
         
-        ChartFactoryManager chartFactoryManager = injector.getInstance(ChartFactoryManager.class);
-        registerServiceListener(bc, chartFactoryManager::addFactory, chartFactoryManager::removeFactory, CyCustomGraphicsFactory.class);
-        SessionCustomGraphicsListener customGraphicsListener = injector.getInstance(SessionCustomGraphicsListener.class);
-        registerService(bc, customGraphicsListener, SessionLoadedListener.class);
-        
         registerToolBarButton(bc);
+        
+        registerService(bc, injector.getInstance(SimpleTestLayout.class), CyLayoutAlgorithm.class);
     }
     
     private void registerToolBarButton(BundleContext bc) {

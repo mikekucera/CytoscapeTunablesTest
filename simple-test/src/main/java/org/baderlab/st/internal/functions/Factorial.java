@@ -30,12 +30,12 @@ public class Factorial extends AbstractFunction {
     }
 
     @Override
-    public Object evaluateFunction(Object[] args) throws FunctionError {
+    public Long evaluateFunction(Object[] args) throws FunctionError {
         int n = ((Number) args[0]).intValue();
         
         long x = 1;
         if(x == 0) {
-            return 1;
+            return 1l;
         }
         else {
             for(int i = 2; i <= n; i++) {
