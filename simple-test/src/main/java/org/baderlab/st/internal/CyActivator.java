@@ -1,5 +1,9 @@
 package org.baderlab.st.internal;
 
+import static org.cytoscape.application.swing.ActionEnableSupport.ENABLE_FOR_ALWAYS;
+import static org.cytoscape.work.ServiceProperties.ENABLE_FOR;
+import static org.cytoscape.work.ServiceProperties.PREFERRED_MENU;
+import static org.cytoscape.work.ServiceProperties.TITLE;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 
@@ -38,6 +42,7 @@ import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
 import org.baderlab.st.internal.layout.SimpleTestLayout;
 import org.baderlab.st.internal.toolbar.SayHelloTaskFactory;
+import org.baderlab.st.internal.tuneables.BoundedIntegerTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
@@ -55,6 +60,7 @@ import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
@@ -122,6 +128,13 @@ public class CyActivator extends AbstractCyActivator {
         registerToolBarButton(bc);
         
         registerService(bc, injector.getInstance(SimpleTestLayout.class), CyLayoutAlgorithm.class);
+        
+        
+        Properties props = new Properties();
+        props.setProperty(PREFERRED_MENU, "Apps.Simple Test");
+        props.setProperty(TITLE, "Test BoundedInteger");
+        props.setProperty(ENABLE_FOR, ENABLE_FOR_ALWAYS);
+        registerService(bc, new BoundedIntegerTaskFactory(), NetworkViewTaskFactory.class, props);
     }
     
     private void registerToolBarButton(BundleContext bc) {
