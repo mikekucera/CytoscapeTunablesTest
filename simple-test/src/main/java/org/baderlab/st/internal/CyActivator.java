@@ -6,6 +6,7 @@ import static org.cytoscape.work.ServiceProperties.PREFERRED_MENU;
 import static org.cytoscape.work.ServiceProperties.TITLE;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
+import static org.ops4j.peaberry.util.Filters.ldap;
 
 import java.net.URL;
 import java.util.Properties;
@@ -16,6 +17,7 @@ import org.baderlab.st.internal.actions.ColumnSetAllAction;
 import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
 import org.baderlab.st.internal.actions.CreateNetworkTableAction;
+import org.baderlab.st.internal.actions.CreateNetworkViewAction;
 import org.baderlab.st.internal.actions.CreateNodeAction;
 import org.baderlab.st.internal.actions.CreateSubnetworkAction;
 import org.baderlab.st.internal.actions.CreateTablesWithViewSuidsAction;
@@ -61,6 +63,7 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.visualize.ApplyPreferredLayoutTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
@@ -89,6 +92,7 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(CreateNetworkViewAction.class));
         registerMenuAction(bc, injector.getInstance(RowsSetFacadeTestAction.class));
         registerMenuAction(bc, injector.getInstance(ColumnSetAllAction.class));
         registerMenuAction(bc, injector.getInstance(PrintCurrentNodeTableAction.class));
@@ -196,9 +200,9 @@ public class CyActivator extends AbstractCyActivator {
             bindService(CyNetworkViewFactory.class);
             bindService(CyLayoutAlgorithmManager.class);
             bindService(CommandExecutorTaskFactory.class);
-            
             bindService(TunableSetter.class);
             bindService(TunablePropertySerializerFactory.class);
+            bindService(ApplyPreferredLayoutTaskFactory.class);
             
             TypeLiteral<SynchronousTaskManager<?>> synchronousManager = new TypeLiteral<SynchronousTaskManager<?>>(){};
             bind(synchronousManager).toProvider(service(synchronousManager).single());
@@ -206,6 +210,10 @@ public class CyActivator extends AbstractCyActivator {
         
         private <T> void bindService(Class<T> serviceClass) {
             bind(serviceClass).toProvider(service(serviceClass).single());
+        }
+        
+        private <T> void bindService(Class<T> serviceClass, String filter) {
+            bind(serviceClass).toProvider(service(serviceClass).filter(ldap(filter)).single());
         }
     }
     
