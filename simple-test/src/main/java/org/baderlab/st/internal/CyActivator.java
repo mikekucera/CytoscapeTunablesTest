@@ -30,6 +30,8 @@ import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.RowsSetFacadeTestAction;
 import org.baderlab.st.internal.actions.RowsSetListenAction;
+import org.baderlab.st.internal.actions.TestAnnotationGradientPaint;
+import org.baderlab.st.internal.actions.TestAnnotationGradientPaint.Gradient;
 import org.baderlab.st.internal.actions.TestBadURLAction;
 import org.baderlab.st.internal.actions.TestRestoreEdgeAction;
 import org.baderlab.st.internal.actions.ThrowExceptionAction;
@@ -69,6 +71,10 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.presentation.annotations.AnnotationFactory;
+import org.cytoscape.view.presentation.annotations.AnnotationManager;
+import org.cytoscape.view.presentation.annotations.ShapeAnnotation;
+import org.cytoscape.view.presentation.annotations.TextAnnotation;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.ServiceProperties;
 import org.cytoscape.work.SynchronousTaskManager;
@@ -92,6 +98,8 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(TestAnnotationGradientPaint.class).setGradient(Gradient.LINEAR));
+        registerMenuAction(bc, injector.getInstance(TestAnnotationGradientPaint.class).setGradient(Gradient.RADIAL));
         registerMenuAction(bc, injector.getInstance(CreateNetworkViewAction.class));
         registerMenuAction(bc, injector.getInstance(RowsSetFacadeTestAction.class));
         registerMenuAction(bc, injector.getInstance(ColumnSetAllAction.class));
@@ -206,6 +214,12 @@ public class CyActivator extends AbstractCyActivator {
             
             TypeLiteral<SynchronousTaskManager<?>> synchronousManager = new TypeLiteral<SynchronousTaskManager<?>>(){};
             bind(synchronousManager).toProvider(service(synchronousManager).single());
+            
+            bindService(AnnotationManager.class);
+            TypeLiteral<AnnotationFactory<ShapeAnnotation>> shapeFactory = new TypeLiteral<AnnotationFactory<ShapeAnnotation>>(){};
+            bind(shapeFactory).toProvider(service(shapeFactory).filter(ldap("(type=ShapeAnnotation.class)")).single());
+            TypeLiteral<AnnotationFactory<TextAnnotation>> textFactory = new TypeLiteral<AnnotationFactory<TextAnnotation>>(){};
+            bind(textFactory).toProvider(service(textFactory).filter(ldap("(type=TextAnnotation.class)")).single());
         }
         
         private <T> void bindService(Class<T> serviceClass) {
