@@ -16,6 +16,7 @@ import org.baderlab.st.internal.actions.ClearUndoStackAction;
 import org.baderlab.st.internal.actions.ColumnSetAllAction;
 import org.baderlab.st.internal.actions.CountTaskAction;
 import org.baderlab.st.internal.actions.CreateLocalAttributeAction;
+import org.baderlab.st.internal.actions.CreateNetworkAndViewAction;
 import org.baderlab.st.internal.actions.CreateNetworkTableAction;
 import org.baderlab.st.internal.actions.CreateNetworkViewAction;
 import org.baderlab.st.internal.actions.CreateNodeAction;
@@ -63,6 +64,7 @@ import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.visualize.ApplyPreferredLayoutTaskFactory;
@@ -98,6 +100,7 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class));
         registerMenuAction(bc, injector.getInstance(TestAnnotationGradientPaint.class).setGradient(Gradient.LINEAR));
         registerMenuAction(bc, injector.getInstance(TestAnnotationGradientPaint.class).setGradient(Gradient.RADIAL));
         registerMenuAction(bc, injector.getInstance(CreateNetworkViewAction.class));
@@ -138,6 +141,7 @@ public class CyActivator extends AbstractCyActivator {
         registerCommand(bc, "write-to-log", injector.getInstance(WriteToLogTaskFactory.class));
         
         registerToolBarButton(bc);
+        registerActionInFileMenu(bc);
         
         registerService(bc, injector.getInstance(SimpleTestLayout.class), CyLayoutAlgorithm.class);
         
@@ -162,6 +166,17 @@ public class CyActivator extends AbstractCyActivator {
         props.setProperty(ServiceProperties.INSERT_TOOLBAR_SEPARATOR_AFTER, "true");
         registerService(bc, taskFactory, TaskFactory.class, props);
     }
+    
+    private void registerActionInFileMenu(BundleContext bc) {
+        TaskFactory taskFactory = new SayHelloTaskFactory();
+        Properties props = new Properties();
+        props.setProperty(ServiceProperties.PREFERRED_MENU, "File.Import");
+        props.setProperty(ServiceProperties.TITLE, "Network from (app-specific-format)...");
+        props.setProperty(ServiceProperties.MENU_GRAVITY, "30.0");
+        props.setProperty(ServiceProperties.INSERT_SEPARATOR_BEFORE, "true");
+        registerService(bc, taskFactory, TaskFactory.class, props);
+    }
+    
 
     private void registerMenuAction(BundleContext bc, AbstractCyAction action) {
         action.setPreferredMenu("Apps.Simple Test");
@@ -211,6 +226,7 @@ public class CyActivator extends AbstractCyActivator {
             bindService(TunableSetter.class);
             bindService(TunablePropertySerializerFactory.class);
             bindService(ApplyPreferredLayoutTaskFactory.class);
+            bindService(CyNetworkNaming.class);
             
             TypeLiteral<SynchronousTaskManager<?>> synchronousManager = new TypeLiteral<SynchronousTaskManager<?>>(){};
             bind(synchronousManager).toProvider(service(synchronousManager).single());

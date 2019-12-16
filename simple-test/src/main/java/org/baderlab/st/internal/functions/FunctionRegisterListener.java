@@ -13,14 +13,14 @@ public class FunctionRegisterListener implements EquationFunctionAddedListener, 
     @Override
     public void handleEvent(EquationFunctionAddedEvent e) {
         Collection<Function> functions = e.getPayloadCollection();
-        System.out.println("EquationFunctionAddedEvent: " + functions);
+//        System.out.println("EquationFunctionAddedEvent: " + functions);
 
     }
 
     @Override
     public void handleEvent(EquationFunctionRemovedEvent e) {
         Collection<Function> functions = e.getPayloadCollection();
-        System.out.println("EquationFunctionRemovedEvent: " + functions);
+//        System.out.println("EquationFunctionRemovedEvent: " + functions);
     }
 
 }
