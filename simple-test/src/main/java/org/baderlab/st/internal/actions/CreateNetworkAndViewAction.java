@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
@@ -17,8 +16,8 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.swing.DialogTaskManager;
 
 import com.google.inject.Inject;
 
@@ -31,25 +30,38 @@ public class CreateNetworkAndViewAction extends AbstractCyAction {
     @Inject private CyNetworkManager networkManager;
     @Inject private CyNetworkViewFactory networkViewFactory;
     @Inject private CyNetworkViewManager networkViewManager;
-    @Inject private DialogTaskManager taskManager;
+    @Inject private SynchronousTaskManager<?> taskManager;
     @Inject private VisualMappingManager visualMappingManager;
     @Inject private ApplyPreferredLayoutTaskFactory layoutTaskFactory;
     
+    private int numNetworks = 1;
     
     @Inject
     public CreateNetworkAndViewAction(CyApplicationManager applicationManager) {
         super("Create New Network and View", applicationManager, null, null);
     }
     
+    public CreateNetworkAndViewAction setNumNetworks(int networks) {
+        this.numNetworks = networks;
+        setName("Create " + numNetworks + " New Networks and Views");
+        return this;
+    }
+    
     @Override
-    public void actionPerformed(ActionEvent e) {        
+    public void actionPerformed(ActionEvent e) {
+        for(int i = 0; i < numNetworks; i++) {
+            createNetworkAndView();
+        }
+    }
+    
+    private void createNetworkAndView() {
         // create network
         CyNetwork network = networkFactory.createNetwork();
         
         // create nodes and edges
         CyNode node1 = network.addNode();
         CyNode node2 = network.addNode();
-        CyEdge edge = network.addEdge(node1, node2, false);
+        network.addEdge(node1, node2, false);
         
         // set names
         network.getDefaultNodeTable().getRow(node1.getSUID()).set(CyNetwork.NAME, "Node-1");

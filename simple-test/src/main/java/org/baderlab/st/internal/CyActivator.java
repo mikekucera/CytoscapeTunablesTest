@@ -101,6 +101,7 @@ public class CyActivator extends AbstractCyActivator {
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
         registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class));
+        registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class).setNumNetworks(100));
         registerMenuAction(bc, injector.getInstance(TestAnnotationGradientPaint.class).setGradient(Gradient.LINEAR));
         registerMenuAction(bc, injector.getInstance(TestAnnotationGradientPaint.class).setGradient(Gradient.RADIAL));
         registerMenuAction(bc, injector.getInstance(CreateNetworkViewAction.class));
