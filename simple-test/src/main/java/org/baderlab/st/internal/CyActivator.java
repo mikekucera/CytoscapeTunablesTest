@@ -2,6 +2,7 @@ package org.baderlab.st.internal;
 
 import static org.cytoscape.application.swing.ActionEnableSupport.ENABLE_FOR_ALWAYS;
 import static org.cytoscape.work.ServiceProperties.ENABLE_FOR;
+import static org.cytoscape.work.ServiceProperties.PREFERRED_ACTION;
 import static org.cytoscape.work.ServiceProperties.PREFERRED_MENU;
 import static org.cytoscape.work.ServiceProperties.TITLE;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
@@ -29,6 +30,7 @@ import org.baderlab.st.internal.actions.FitContentTest;
 import org.baderlab.st.internal.actions.NetworkViewUpdateAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
+import org.baderlab.st.internal.actions.PrintListenerCountAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.RowsSetFacadeTestAction;
 import org.baderlab.st.internal.actions.RowsSetListenAction;
@@ -47,6 +49,9 @@ import org.baderlab.st.internal.functions.Factorial;
 import org.baderlab.st.internal.functions.Fibonacci;
 import org.baderlab.st.internal.functions.FunctionRegisterListener;
 import org.baderlab.st.internal.layout.SimpleTestLayout;
+import org.baderlab.st.internal.tasks.EdgeViewDoubleClickTaskFactory;
+import org.baderlab.st.internal.tasks.NetworkViewDoubleClickTaskFactory;
+import org.baderlab.st.internal.tasks.NodeViewDoubleClickTaskFactory;
 import org.baderlab.st.internal.toolbar.SayHelloTaskFactory;
 import org.baderlab.st.internal.tuneables.BoundedIntegerTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
@@ -67,7 +72,9 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.task.visualize.ApplyPreferredLayoutTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
@@ -101,6 +108,9 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        PrintListenerCountAction printListenerAction = injector.getInstance(PrintListenerCountAction.class);
+        registerMenuAction(bc, printListenerAction);
+        registerMenuAction(bc, printListenerAction.getResetAction());
         registerMenuAction(bc, injector.getInstance(FitContentTest.class));
         registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class));
         registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class).setNumNetworks(100));
@@ -145,16 +155,51 @@ public class CyActivator extends AbstractCyActivator {
         
         registerToolBarButton(bc);
         registerActionInFileMenu(bc);
+        registerDoubleClickTasks(bc, injector);
         
         registerService(bc, injector.getInstance(SimpleTestLayout.class), CyLayoutAlgorithm.class);
         
-        
-        Properties props = new Properties();
-        props.setProperty(PREFERRED_MENU, "Apps.Simple Test");
-        props.setProperty(TITLE, "Test BoundedInteger");
-        props.setProperty(ENABLE_FOR, ENABLE_FOR_ALWAYS);
-        registerService(bc, new BoundedIntegerTaskFactory(), NetworkViewTaskFactory.class, props);
+        {
+            Properties props = new Properties();
+            props.setProperty(PREFERRED_MENU, "Apps.Simple Test");
+            props.setProperty(TITLE, "Test BoundedInteger");
+            props.setProperty(ENABLE_FOR, ENABLE_FOR_ALWAYS);
+            registerService(bc, new BoundedIntegerTaskFactory(), NetworkViewTaskFactory.class, props);
+        }
     }
+    
+    
+    private void registerDoubleClickTasks(BundleContext bc, Injector injector) {
+        {
+            NetworkViewTaskFactory taskFactory = injector.getInstance(NetworkViewDoubleClickTaskFactory.class);
+            Properties props = new Properties();
+            props.setProperty(PREFERRED_ACTION, "OPEN");
+            props.setProperty(TITLE, "Test Network Double Click");
+            registerService(bc, taskFactory, NetworkViewTaskFactory.class, props);
+        }
+        {
+            EdgeViewTaskFactory taskFactory = injector.getInstance(EdgeViewDoubleClickTaskFactory.class);
+            Properties props = new Properties();
+            props.setProperty(PREFERRED_ACTION, "OPEN");
+            props.setProperty(TITLE, "Test Edge Double Click");
+            registerService(bc, taskFactory, EdgeViewTaskFactory.class, props);
+        }
+        {
+            NodeViewTaskFactory taskFactory = injector.getInstance(NodeViewDoubleClickTaskFactory.class);
+            Properties props = new Properties();
+            props.setProperty(PREFERRED_ACTION, "OPEN");
+            props.setProperty(TITLE, "Test Node Double Click");
+            registerService(bc, taskFactory, NodeViewTaskFactory.class, props);
+        }
+        {
+            NodeViewTaskFactory taskFactory = injector.getInstance(NodeViewDoubleClickTaskFactory.class);
+            Properties props = new Properties();
+            props.setProperty(PREFERRED_ACTION, "OPEN");
+            props.setProperty(TITLE, "Test Node Double Click 2");
+            registerService(bc, taskFactory, NodeViewTaskFactory.class, props);
+        }
+    }
+    
     
     private void registerToolBarButton(BundleContext bc) {
         TaskFactory taskFactory = new SayHelloTaskFactory();
