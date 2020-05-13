@@ -16,7 +16,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 @SuppressWarnings("serial")
 public class PrintListenerCountAction extends AbstractCyAction {
 

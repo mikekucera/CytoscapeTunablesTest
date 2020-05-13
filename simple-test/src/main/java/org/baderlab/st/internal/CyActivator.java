@@ -31,6 +31,7 @@ import org.baderlab.st.internal.actions.NetworkViewUpdateAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintListenerCountAction;
+import org.baderlab.st.internal.actions.PrintServiceTypeAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.RowsSetFacadeTestAction;
 import org.baderlab.st.internal.actions.RowsSetListenAction;
@@ -108,9 +109,9 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
-        PrintListenerCountAction printListenerAction = injector.getInstance(PrintListenerCountAction.class);
-        registerMenuAction(bc, printListenerAction);
-        registerMenuAction(bc, printListenerAction.getResetAction());
+        registerMenuAction(bc, injector.getInstance(PrintListenerCountAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintListenerCountAction.class).getResetAction());
+        registerMenuAction(bc, injector.getInstance(PrintServiceTypeAction.class));
         registerMenuAction(bc, injector.getInstance(FitContentTest.class));
         registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class));
         registerMenuAction(bc, injector.getInstance(CreateNetworkAndViewAction.class).setNumNetworks(100));
