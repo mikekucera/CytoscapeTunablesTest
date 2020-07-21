@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 @SuppressWarnings("serial")
 public class CreateNetworkAndViewAction extends AbstractCyAction {
 
-    
     @Inject private CyNetworkFactory networkFactory;
     @Inject private CyNetworkNaming networkNaming;
     @Inject private CyNetworkManager networkManager;
