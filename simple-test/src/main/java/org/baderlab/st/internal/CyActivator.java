@@ -28,6 +28,7 @@ import org.baderlab.st.internal.actions.FindNodeNamedAAction;
 import org.baderlab.st.internal.actions.FirePaloadEventsOnEDTAction;
 import org.baderlab.st.internal.actions.FitContentTest;
 import org.baderlab.st.internal.actions.NetworkViewUpdateAction;
+import org.baderlab.st.internal.actions.PasswordTunableAction;
 import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintListenerCountAction;
@@ -111,6 +112,7 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(PasswordTunableAction.class));
         registerMenuAction(bc, injector.getInstance(PrintTableViewsAction.class));
         registerMenuAction(bc, injector.getInstance(TestMessageDialogAction.class));
         registerMenuAction(bc, injector.getInstance(PrintListenerCountAction.class));
