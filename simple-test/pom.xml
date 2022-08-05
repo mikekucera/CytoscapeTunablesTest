@@ -4,7 +4,7 @@
 	<properties>
 		<bundle.symbolicName>org.baderlab.simple-test</bundle.symbolicName>
 		<bundle.namespace>org.baderlab.st</bundle.namespace>
-		<cyversion>3.6.0</cyversion>
+		<cyversion>3.10.0-SNAPSHOT</cyversion>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -44,8 +44,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>11</source>
+					<target>11</target>
 					<optimize>true</optimize>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
@@ -136,6 +136,26 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
+			<version>${cyversion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>command-executor-api</artifactId>
+			<version>${cyversion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>equations-api</artifactId>
+			<version>${cyversion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-api</artifactId>
+			<version>${cyversion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-api</artifactId>
 			<version>${cyversion}</version>
 		</dependency>
 	

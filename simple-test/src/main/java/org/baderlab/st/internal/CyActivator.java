@@ -33,6 +33,8 @@ import org.baderlab.st.internal.actions.PrintAllTablesAction;
 import org.baderlab.st.internal.actions.PrintCurrentNodeTableAction;
 import org.baderlab.st.internal.actions.PrintListenerCountAction;
 import org.baderlab.st.internal.actions.PrintServiceTypeAction;
+import org.baderlab.st.internal.actions.PrintSystemPropertiesAction;
+import org.baderlab.st.internal.actions.PrintTableStylesAction;
 import org.baderlab.st.internal.actions.PrintTableViewsAction;
 import org.baderlab.st.internal.actions.PrintVisualMappingTypesAction;
 import org.baderlab.st.internal.actions.RowsSetFacadeTestAction;
@@ -113,9 +115,11 @@ public class CyActivator extends AbstractCyActivator {
         // Tired of manually passing around Cytoscape service references? Use Guice!
         Injector injector = Guice.createInjector(osgiModule(bc), new MainModule());
         
+        registerMenuAction(bc, injector.getInstance(PrintTableStylesAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintTableViewsAction.class));
+        registerMenuAction(bc, injector.getInstance(PrintSystemPropertiesAction.class));
         registerMenuAction(bc, injector.getInstance(SessionCreateAction.class));
         registerMenuAction(bc, injector.getInstance(PasswordTunableAction.class));
-        registerMenuAction(bc, injector.getInstance(PrintTableViewsAction.class));
         registerMenuAction(bc, injector.getInstance(TestMessageDialogAction.class));
         registerMenuAction(bc, injector.getInstance(PrintListenerCountAction.class));
         registerMenuAction(bc, injector.getInstance(PrintListenerCountAction.class).getResetAction());
